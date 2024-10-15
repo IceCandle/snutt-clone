@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import LoginForm from '../components/LoginForm';
 import SocialLoginButtons from '../components/SocialLoginButtons';
@@ -8,7 +8,7 @@ interface LoginPageProps {
   error: string | null;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin, error }) => {
+const LoginPage = ({ onLogin, error }: LoginPageProps) => {
   const [isLoginView, setIsLoginView] = useState(false);
 
   if (isLoginView) {

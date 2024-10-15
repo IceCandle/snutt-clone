@@ -1,6 +1,4 @@
-import React from 'react';
-
-const SocialLoginButtons: React.FC = () => {
+const SocialLoginButtons = () => {
   const handleSocialLogin = (platform: string) => {
     alert(`${platform} login is not implemented yet.`);
   };

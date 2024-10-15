@@ -5,7 +5,7 @@ interface LoginFormProps {
   error: string | null;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error }) => {
+const LoginForm = ({ onLogin, error }: LoginFormProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 

@@ -1,10 +1,8 @@
-import React from 'react';
-
 import useAuth from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
 import UserInfoPage from './pages/UserInfoPage';
 
-const App: React.FC = () => {
+const App = () => {
   const { nickname, error, handleLogin, handleLogout } = useAuth();
 
   return (
