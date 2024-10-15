@@ -22,8 +22,8 @@ export const login = async (id: string, password: string): Promise<LoginResponse
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Unknown error occurred' }));
-      throw new Error(errorData.message || 'Login failed');
+      const errorData = await response.json().catch(() => ({})) as { message?: string };
+      throw new Error(errorData.message ?? 'Login failed');
     }
 
     return await response.json() as LoginResponse;
@@ -32,7 +32,7 @@ export const login = async (id: string, password: string): Promise<LoginResponse
   }
 };
 
-export const getUserInfo = async (token: string): Promise<{ nickname: { nickname: string; tag: string } }> => {
+export const getUserInfo = async (token: string): Promise<UserInfoResponse> => {
   const response = await fetch(`${API_BASE_URL}/users/me`, {
     headers: {
       'x-access-token': token,
@@ -40,8 +40,8 @@ export const getUserInfo = async (token: string): Promise<{ nickname: { nickname
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: 'Unknown error occurred' }));
-    throw new Error(errorData.message || 'Failed to fetch user info');
+    const errorData = await response.json().catch(() => ({})) as unknown as { message?: string };
+    throw new Error(errorData.message ?? 'Failed to fetch user info');
   }
 
   return await response.json() as UserInfoResponse;
