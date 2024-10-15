@@ -7,7 +7,7 @@ const App = () => {
 
   return (
     <div className="h-screen w-screen">
-      {(nickname != null) ? (
+      {nickname != null ? (
         <UserInfoPage nickname={nickname} onLogout={handleLogout} />
       ) : (
         <LoginPage onLogin={handleLogin} error={error} />

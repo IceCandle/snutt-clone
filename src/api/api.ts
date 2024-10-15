@@ -1,4 +1,5 @@
-const API_BASE_URL = 'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
+const API_BASE_URL =
+  'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
 
 interface LoginResponse {
   token: string;
@@ -11,7 +12,10 @@ interface UserInfoResponse {
   };
 }
 
-export const login = async (id: string, password: string): Promise<LoginResponse> => {
+export const login = async (
+  id: string,
+  password: string,
+): Promise<LoginResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login_local`, {
       method: 'POST',
@@ -22,13 +26,17 @@ export const login = async (id: string, password: string): Promise<LoginResponse
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({})) as { message?: string };
+      const errorData = (await response.json().catch(() => ({}))) as {
+        message?: string;
+      };
       throw new Error(errorData.message ?? 'Login failed');
     }
 
-    return await response.json() as LoginResponse;
+    return (await response.json()) as LoginResponse;
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Unexpected error during login.');
+    throw new Error(
+      error instanceof Error ? error.message : 'Unexpected error during login.',
+    );
   }
 };
 
@@ -40,9 +48,11 @@ export const getUserInfo = async (token: string): Promise<UserInfoResponse> => {
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({})) as unknown as { message?: string };
+    const errorData = (await response.json().catch(() => ({}))) as unknown as {
+      message?: string;
+    };
     throw new Error(errorData.message ?? 'Failed to fetch user info');
   }
 
-  return await response.json() as UserInfoResponse;
+  return (await response.json()) as UserInfoResponse;
 };

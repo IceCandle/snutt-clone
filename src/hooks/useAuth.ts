@@ -1,9 +1,11 @@
-import { useCallback,useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { getUserInfo, login } from '../api/api';
 
 const useAuth = () => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem('token'),
+  );
   const [nickname, setNickname] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -12,7 +14,10 @@ const useAuth = () => {
       const userInfo = await getUserInfo(authToken);
       setNickname(`${userInfo.nickname.nickname}#${userInfo.nickname.tag}`);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user info. Please try logging in again.';
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to fetch user info. Please try logging in again.';
       setError(errorMessage);
       handleLogout();
     }
@@ -21,7 +26,9 @@ const useAuth = () => {
   useEffect(() => {
     if (token != null) {
       fetchUserInfo(token).catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : 'Error fetching user info.');
+        setError(
+          err instanceof Error ? err.message : 'Error fetching user info.',
+        );
       });
     }
   }, [token, fetchUserInfo]);
@@ -34,7 +41,8 @@ const useAuth = () => {
       localStorage.setItem('token', response.token);
       await fetchUserInfo(response.token);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed. Please try again.';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Login failed. Please try again.';
       setError(errorMessage);
     }
   };

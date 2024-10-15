@@ -10,27 +10,27 @@ const SocialLoginButtons = () => {
 
   return (
     <div className="w-full px-3 mt-10">
-      {/* Divider with Text */}
       <div className="w-full max-w-sm mt-8 flex items-center justify-between px-4">
         <div className="flex-grow h-px bg-[#c4c4c4]"></div>
-        <span className="px-2 text-sm text-[#c4c4c4] font-medium">SNS 계정으로 계속하기</span>
+        <span className="px-2 text-sm text-[#c4c4c4] font-medium">
+          SNS 계정으로 계속하기
+        </span>
         <div className="flex-grow h-px bg-[#c4c4c4]"></div>
       </div>
-
-      {/* Social Login Buttons */}
       <div className="mt-4 flex justify-center items-center gap-3">
-        {/* Kakao Icon */}
         <img
           src={kakaoIcon}
           alt="Kakao"
           className="w-11 h-11 rounded-[21.6px] cursor-pointer"
-          onClick={() => { handleSocialLogin('Kakao'); }}
+          onClick={() => {
+            handleSocialLogin('Kakao');
+          }}
         />
-
-        {/* Google Icon */}
         <div
           className="w-11 h-11 p-2.5 bg-white rounded-full border border-[#c4c4c4] flex justify-center items-center cursor-pointer"
-          onClick={() => { handleSocialLogin('Google'); }}
+          onClick={() => {
+            handleSocialLogin('Google');
+          }}
         >
           <img
             src={googleIcon}
@@ -38,21 +38,21 @@ const SocialLoginButtons = () => {
             className="w-[24.8px] h-[24.8px] rounded-full"
           />
         </div>
-
-        {/* Facebook Icon */}
         <img
           src={facebookIcon}
           alt="Facebook"
           className="w-11 h-11 cursor-pointer"
-          onClick={() => { handleSocialLogin('Facebook'); }}
+          onClick={() => {
+            handleSocialLogin('Facebook');
+          }}
         />
-
-        {/* Apple Icon */}
         <img
           src={appleIcon}
           alt="Apple"
           className="w-11 h-11 rounded-full cursor-pointer"
-          onClick={() => { handleSocialLogin('Apple'); }}
+          onClick={() => {
+            handleSocialLogin('Apple');
+          }}
         />
       </div>
     </div>
