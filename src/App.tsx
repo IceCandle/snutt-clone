@@ -1,9 +1,19 @@
-import './reset.css';
+import useAuth from './hooks/useAuth';
+import LoginPage from './pages/LoginPage';
+import UserInfoPage from './pages/UserInfoPage';
 
-import { useReducer } from 'react';
+const App = () => {
+  const { nickname, error, handleLogin, handleLogout } = useAuth();
 
-export const App = () => {
-  const [count, increment] = useReducer((c: number) => c + 1, 0);
-
-  return <button onClick={increment}>{count}</button>;
+  return (
+    <div className="h-screen w-screen">
+      {nickname != null ? (
+        <UserInfoPage nickname={nickname} onLogout={handleLogout} />
+      ) : (
+        <LoginPage onLogin={handleLogin} error={error} />
+      )}
+    </div>
+  );
 };
+
+export default App;
