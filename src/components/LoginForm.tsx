@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 
 interface LoginFormProps {
-  onLogin: (username: string, password: string) => Promise<void>;
+  onLogin: (username: string, password: string) => void;
   error: string | null;
+  isLoading: boolean;
 }
 
-const LoginForm = ({ onLogin, error }: LoginFormProps) => {
+const LoginForm = ({ onLogin, error, isLoading }: LoginFormProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
-    onLogin(username, password).catch((loginError: unknown) => {
-      console.error('Login failed', loginError);
-    });
+    onLogin(username, password);
   };
 
   return (
@@ -39,9 +38,10 @@ const LoginForm = ({ onLogin, error }: LoginFormProps) => {
       <button
         type="submit"
         className="w-full p-3 bg-[#f58d3d] rounded-md justify-center items-center gap-[5px] inline-flex"
+        disabled={isLoading}
       >
         <div className="text-white text-sm font-bold font-['Pretendard']">
-          로그인
+          {isLoading ? '로그인 중...' : '로그인'}
         </div>
       </button>
       {error != null && <p className="text-red-500 mt-2">{error}</p>}

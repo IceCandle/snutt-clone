@@ -1,15 +1,23 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import LoginForm from '../components/LoginForm';
 import SocialLoginButtons from '../components/SocialLoginButtons';
+import { useUser } from '../hooks/useUser';
 
-interface LoginPageProps {
-  onLogin: (username: string, password: string) => Promise<void>;
-  error: string | null;
-}
-
-const LoginPage = ({ onLogin, error }: LoginPageProps) => {
+const LoginPage = () => {
   const [isLoginView, setIsLoginView] = useState(false);
+  const { login, isLoginLoading, loginError } = useUser();
+  const navigate = useNavigate();
+
+  const handleLogin = (username: string, password: string) => {
+    login(
+      { id: username, password },
+      {
+        onSuccess: () => navigate('/user-info'),
+      },
+    );
+  };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-white">
@@ -30,7 +38,11 @@ const LoginPage = ({ onLogin, error }: LoginPageProps) => {
       </div>
       <div className="w-full px-8 mt-8 max-w-sm">
         {isLoginView ? (
-          <LoginForm onLogin={onLogin} error={error} />
+          <LoginForm
+            onLogin={handleLogin}
+            error={loginError != null ? loginError.message : null}
+            isLoading={isLoginLoading}
+          />
         ) : (
           <>
             <button
