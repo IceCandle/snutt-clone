@@ -14,7 +14,9 @@ const LoginPage = () => {
     login(
       { id: username, password },
       {
-        onSuccess: () => navigate('/user-info'),
+        onSuccess: () => {
+          navigate('/user-info');
+        },
       },
     );
   };
