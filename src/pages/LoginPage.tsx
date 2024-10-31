@@ -29,10 +29,12 @@ const LoginPage = ({ onLogin, error }: LoginPageProps) => {
         </div>
       </div>
       <div className="w-full px-8 mt-8 max-w-sm">
+        {/* True인 경우(false의 로그인 버튼을 누른 경우), login form page로 넘김 => ID PW 입력창이 뜸 */}
         {isLoginView ? (
           <LoginForm onLogin={onLogin} error={error} />
         ) : (
           <>
+            {/* flase인 경우(default), 로그인 버튼 & 회원가입 버튼 존재*/}
             <button
               onClick={() => {
                 setIsLoginView(true);
