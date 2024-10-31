@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import MainPage from './Mainpage.tsx';
+import MainPage from './MainPage.tsx';
 import MyPage from './MyPage.tsx';
 
 interface UserInfoPageProps {
