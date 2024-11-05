@@ -13,7 +13,15 @@ interface UserInfoResponse {
   };
 }
 
-//
+interface TableResponse {
+  lecture_list: {
+    class_time_json: {
+      startMinute: number;
+      endMinute: number;
+    }[];
+  }[];
+}
+
 export const login = async (
   id: string,
   password: string,
@@ -46,7 +54,7 @@ export const login = async (
   }
 };
 
-// token을 받아서 user 정보를 return
+// login에서 받은 token을 이용해서 user 정보를 return
 export const getUserInfo = async (token: string): Promise<UserInfoResponse> => {
   const response = await fetch(`${API_BASE_URL}/users/me`, {
     headers: {
@@ -63,4 +71,21 @@ export const getUserInfo = async (token: string): Promise<UserInfoResponse> => {
   }
 
   return (await response.json()) as UserInfoResponse;
+};
+
+export const getTableInfo = async (token: string): Promise<TableResponse> => {
+  const response = await fetch(`${API_BASE_URL}/table/recent`, {
+    headers: {
+      'x-access-token': token,
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = (await response.json().catch(() => ({}))) as unknown as {
+      message?: string;
+    };
+    throw new Error(errorData.message ?? 'Failed to fetch table info');
+  }
+
+  return (await response.json()) as TableResponse;
 };

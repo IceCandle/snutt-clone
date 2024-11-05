@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { getUserInfo, login } from '../api/api';
+import { getTableInfo, getUserInfo, login } from '../api/api';
+
+interface TimeRange {
+  startMinute: number;
+  endMinute: number;
+}
 
 const useAuth = () => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem('token'),
   );
   const [nickname, setNickname] = useState<string | null>(null);
+  const [table, setTableInfo] = useState<TimeRange[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const fetchUserInfo = useCallback(async (authToken: string) => {
@@ -20,6 +26,26 @@ const useAuth = () => {
           : 'Failed to fetch user info. Please try logging in again.';
       setError(errorMessage);
       handleLogout();
+    }
+  }, []);
+
+  const fetchTableInfo = useCallback(async (authToken: string) => {
+    try {
+      const tableInfo = await getTableInfo(authToken);
+      const newTableInfo: TimeRange[] = tableInfo.lecture_list.flatMap(
+        (lecture) =>
+          lecture.class_time_json.map((classTime) => ({
+            startMinute: classTime.startMinute,
+            endMinute: classTime.endMinute,
+          })),
+      );
+      setTableInfo(newTableInfo);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to fetch table info. Please try logging in again.';
+      setError(errorMessage);
     }
   }, []);
 
