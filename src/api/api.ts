@@ -16,10 +16,15 @@ interface UserInfoResponse {
 interface TableResponse {
   lecture_list: {
     class_time_json: {
+      day: number;
+      place: string;
       startMinute: number;
       endMinute: number;
     }[];
+    course_title: string;
+    credit: number;
   }[];
+  title: string;
 }
 
 export const login = async (

@@ -1,18 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { getTableInfo, getUserInfo, login } from '../api/api';
-
-interface TimeRange {
-  startMinute: number;
-  endMinute: number;
-}
+import type { TimeRange } from '../components/types';
 
 const useAuth = () => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem('token'),
   );
   const [nickname, setNickname] = useState<string | null>(null);
-  const [table, setTableInfo] = useState<TimeRange[]>([]);
+  const [tableList, setTableInfo] = useState<TimeRange[]>([]);
+  const [title, setTitle] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchUserInfo = useCallback(async (authToken: string) => {
@@ -35,10 +32,16 @@ const useAuth = () => {
       const newTableInfo: TimeRange[] = tableInfo.lecture_list.flatMap(
         (lecture) =>
           lecture.class_time_json.map((classTime) => ({
+            day: classTime.day,
             startMinute: classTime.startMinute,
             endMinute: classTime.endMinute,
+            course_title: lecture.course_title,
+            place: classTime.place,
+            credit: lecture.credit,
           })),
       );
+      const table_title = tableInfo.title;
+      setTitle(table_title);
       setTableInfo(newTableInfo);
     } catch (err) {
       const errorMessage =
@@ -66,6 +69,7 @@ const useAuth = () => {
       setToken(response.token);
       localStorage.setItem('token', response.token);
       await fetchUserInfo(response.token);
+      await fetchTableInfo(response.token);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Login failed. Please try again.';
@@ -79,7 +83,7 @@ const useAuth = () => {
     localStorage.removeItem('token');
   };
 
-  return { token, nickname, error, handleLogin, handleLogout };
+  return { tableList, title, nickname, error, handleLogin, handleLogout };
 };
 
 export default useAuth;

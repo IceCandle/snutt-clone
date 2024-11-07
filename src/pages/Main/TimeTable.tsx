@@ -1,21 +1,32 @@
-import React from 'react';
+import { useEffect } from 'react';
+
+import type { TimeRange } from '../../components/types';
 
 export const TimeTable = ({
-  timetableId,
+  //   timetableId,
+  //   setTimetableId,
   setTotalCredit,
-  setTitle,
-  setTimetableId,
+  tableList,
 }: {
-  timetableId: string | null;
+  //   timetableId: string | null;
+  //   setTimetableId: (timetableId: string) => void;
   setTotalCredit: (credit: number) => void;
-  setTitle: (title: string) => void;
-  setTimetableId: (timetableId: string) => void;
+  tableList: TimeRange[];
 }) => {
   const hourlist = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const daylist = ['월', '화', '수', '목', '금'];
 
   const columnCount = 5;
   const rowCount = hourlist.length * 12;
+
+  useEffect(() => {
+    const totalCredit = tableList.reduce(
+      (sum: number, timeRange: TimeRange) => sum + timeRange.credit,
+      0,
+    );
+    setTotalCredit(totalCredit);
+  }, [tableList, setTotalCredit]);
+
   return (
     <div className="flex relative overflow-hidden flex-col h-screen max-w-375 mx-auto w-full">
       <div
@@ -86,6 +97,26 @@ export const TimeTable = ({
             }}
           ></div>
         ))}
+
+        {tableList.map((time, i) => {
+          return (
+            <div
+              key={i}
+              className="col-start-2 col-end-6 row-start-2 row-end-3 bg-[#f58d3d] text-white text-xs flex justify-center items-center"
+              style={{
+                gridColumnStart: time.day + 2,
+                gridColumnEnd: time.day + 3,
+                gridRowStart: (time.startMinute - 540) / 5 + 2,
+                gridRowEnd: (time.endMinute - 540) / 5 + 2,
+              }}
+            >
+              <span className="text-[10px] font-normal">
+                {time.course_title}
+              </span>
+              <span className="text-[10px] font-bold">{time.place}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
