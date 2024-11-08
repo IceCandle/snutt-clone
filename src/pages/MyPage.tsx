@@ -1,5 +1,6 @@
 import React from 'react';
 
+<<<<<<< HEAD
 import { Navbar } from '../components/Navbar';
 
 interface MyPageProps {
@@ -20,6 +21,13 @@ const MyPage: React.FC<MyPageProps> = ({ nickname, onLogout }) => {
         </button>
       </div>
       <Navbar selectedMenu="mypage" />
+=======
+const MyPage: React.FC = () => {
+  return (
+    <div>
+      <h1>My Page</h1>
+      <p>Welcome to My Page!</p>
+>>>>>>> origin
     </div>
   );
 };
