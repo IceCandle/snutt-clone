@@ -24,8 +24,8 @@ const MainPage = ({ tableList, table_title }: UserInfoPageProps) => {
       <Header totalCredit={totalCredit} title={title} />
       <TimeTable
         // timetableId={timetableId}
-        setTotalCredit={setTotalCredit}
         // setTimetableId={setTimetableId}
+        setTotalCredit={setTotalCredit}
         tableList={tableList}
       />
       <Navbar selectedMenu="timetable" />

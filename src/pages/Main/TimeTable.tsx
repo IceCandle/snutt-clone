@@ -121,5 +121,3 @@ export const TimeTable = ({
     </div>
   );
 };
-
-export default TimeTable;

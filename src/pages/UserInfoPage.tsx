@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import type { TimeRange } from '../components/types';
-import MainPage from './Main/MainPage.tsx';
-import MyPage from './MyPage.tsx';
+import MainPage from './Main/MainPage';
+import MyPage from './MyPage';
 
 interface UserInfoPageProps {
   nickname: string;
