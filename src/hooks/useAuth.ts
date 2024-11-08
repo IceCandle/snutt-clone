@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { getUserInfo, login } from '../api/api';
+import { getTableInfo, getUserInfo, login } from '../api/api';
+import type { TimeRange } from '../components/types';
 
 const useAuth = () => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem('token'),
   );
   const [nickname, setNickname] = useState<string | null>(null);
+  const [tableList, setTableInfo] = useState<TimeRange[]>([]);
+  const [title, setTitle] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchUserInfo = useCallback(async (authToken: string) => {
@@ -23,6 +26,32 @@ const useAuth = () => {
     }
   }, []);
 
+  const fetchTableInfo = useCallback(async (authToken: string) => {
+    try {
+      const tableInfo = await getTableInfo(authToken);
+      const newTableInfo: TimeRange[] = tableInfo.lecture_list.flatMap(
+        (lecture) =>
+          lecture.class_time_json.map((classTime) => ({
+            day: classTime.day,
+            startMinute: classTime.startMinute,
+            endMinute: classTime.endMinute,
+            course_title: lecture.course_title,
+            place: classTime.place,
+            credit: lecture.credit,
+          })),
+      );
+      const table_title = tableInfo.title;
+      setTitle(table_title);
+      setTableInfo(newTableInfo);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to fetch table info. Please try logging in again.';
+      setError(errorMessage);
+    }
+  }, []);
+
   useEffect(() => {
     if (token != null) {
       fetchUserInfo(token).catch((err: unknown) => {
@@ -30,8 +59,14 @@ const useAuth = () => {
           err instanceof Error ? err.message : 'Error fetching user info.',
         );
       });
+
+      fetchTableInfo(token).catch((err: unknown) => {
+        setError(
+          err instanceof Error ? err.message : 'Error fetching table info.',
+        );
+      });
     }
-  }, [token, fetchUserInfo]);
+  }, [token, fetchUserInfo, fetchTableInfo]);
 
   const handleLogin = async (username: string, password: string) => {
     try {
@@ -40,6 +75,7 @@ const useAuth = () => {
       setToken(response.token);
       localStorage.setItem('token', response.token);
       await fetchUserInfo(response.token);
+      await fetchTableInfo(response.token);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Login failed. Please try again.';
@@ -53,7 +89,7 @@ const useAuth = () => {
     localStorage.removeItem('token');
   };
 
-  return { token, nickname, error, handleLogin, handleLogout };
+  return { tableList, title, nickname, error, handleLogin, handleLogout };
 };
 
 export default useAuth;
