@@ -79,26 +79,25 @@ export const getUserInfo = async (token: string): Promise<UserInfoResponse> => {
 };
 
 export const getTableInfo = async (token: string): Promise<TableResponse> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/tables/recent`, {
-      headers: {
-        'x-access-token': token,
-      },
-    });
+  // try {
+  const response = await fetch(`${API_BASE_URL}/tables/recent`, {
+    headers: {
+      'x-access-token': token,
+    },
+  });
 
-    if (!response.ok) {
-      const errorData = (await response
-        .json()
-        .catch(() => ({}))) as unknown as {
-        message?: string;
-      };
-      throw new Error(errorData.message ?? 'Failed to fetch table info');
-    }
-    return (await response.json()) as TableResponse;
-  } catch (error) {
-    // 그 외의 예외처리
-    throw new Error(
-      error instanceof Error ? error.message : 'Unexpected error during login.',
-    );
+  if (!response.ok) {
+    const errorData = (await response.json().catch(() => ({}))) as unknown as {
+      message?: string;
+    };
+    throw new Error(errorData.message ?? 'Failed to fetch table info');
   }
+  return (await response.json()) as TableResponse;
+  // }
+  // catch (error) {
+  //   // 그 외의 예외처리
+  //   throw new Error(
+  //     error instanceof Error ? error.message : 'Unexpected error during login.',
+  // );
+  // }
 };

@@ -59,8 +59,14 @@ const useAuth = () => {
           err instanceof Error ? err.message : 'Error fetching user info.',
         );
       });
+
+      fetchTableInfo(token).catch((err: unknown) => {
+        setError(
+          err instanceof Error ? err.message : 'Error fetching table info.',
+        );
+      });
     }
-  }, [token, fetchUserInfo]);
+  }, [token, fetchUserInfo, fetchTableInfo]);
 
   const handleLogin = async (username: string, password: string) => {
     try {
