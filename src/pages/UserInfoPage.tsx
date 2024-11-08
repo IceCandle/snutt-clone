@@ -1,11 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-<<<<<<< HEAD
 import type { TimeRange } from '../components/types';
 import MainPage from './Main/MainPage.tsx';
-=======
-import MainPage from './MainPage.tsx';
->>>>>>> origin
 import MyPage from './MyPage.tsx';
 
 interface UserInfoPageProps {
@@ -25,7 +21,6 @@ const UserInfoPage = ({
     <BrowserRouter>
       <Routes>
         <Route
-<<<<<<< HEAD
           element={<MainPage tableList={tableList} table_title={title} />}
           path="/"
         />
@@ -33,12 +28,6 @@ const UserInfoPage = ({
           element={<MyPage nickname={nickname} onLogout={onLogout} />}
           path="/mypage"
         />
-=======
-          element={<MainPage nickname={nickname} onLogout={onLogout} />}
-          path="/"
-        />
-        <Route element={<MyPage />} path="/mypage" />
->>>>>>> origin
       </Routes>
     </BrowserRouter>
   );

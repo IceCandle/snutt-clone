@@ -13,7 +13,6 @@ interface UserInfoResponse {
   };
 }
 
-<<<<<<< HEAD
 interface TableResponse {
   lecture_list: {
     class_time_json: {
@@ -28,9 +27,6 @@ interface TableResponse {
   title: string;
 }
 
-=======
-//
->>>>>>> origin
 export const login = async (
   id: string,
   password: string,
@@ -63,11 +59,7 @@ export const login = async (
   }
 };
 
-<<<<<<< HEAD
 // login에서 받은 token을 이용해서 user 정보를 return
-=======
-// token을 받아서 user 정보를 return
->>>>>>> origin
 export const getUserInfo = async (token: string): Promise<UserInfoResponse> => {
   const response = await fetch(`${API_BASE_URL}/users/me`, {
     headers: {
