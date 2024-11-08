@@ -13,6 +13,7 @@ interface UserInfoResponse {
   };
 }
 
+
 interface TableResponse {
   lecture_list: {
     class_time_json: {
@@ -60,6 +61,7 @@ export const login = async (
 };
 
 // login에서 받은 token을 이용해서 user 정보를 return
+// token을 받아서 user 정보를 return
 export const getUserInfo = async (token: string): Promise<UserInfoResponse> => {
   const response = await fetch(`${API_BASE_URL}/users/me`, {
     headers: {
