@@ -16,6 +16,7 @@ const useAuth = () => {
     try {
       const userInfo = await getUserInfo(authToken);
       setNickname(`${userInfo.nickname.nickname}#${userInfo.nickname.tag}`);
+      return userInfo;
     } catch (err) {
       const errorMessage =
         err instanceof Error
@@ -23,6 +24,7 @@ const useAuth = () => {
           : 'Failed to fetch user info. Please try logging in again.';
       setError(errorMessage);
       handleLogout();
+      throw err;
     }
   }, []);
 
@@ -51,6 +53,12 @@ const useAuth = () => {
       setError(errorMessage);
     }
   }, []);
+
+  const handleNicknameChange = async () => {
+    if (token != null) {
+      await fetchUserInfo(token);
+    }
+  };
 
   useEffect(() => {
     if (token != null) {
@@ -96,7 +104,8 @@ const useAuth = () => {
     error,
     handleLogin,
     handleLogout,
-    token, // Now exposing token
+    token,
+    handleNicknameChange,
   };
 };
 
