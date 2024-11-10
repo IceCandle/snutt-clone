@@ -12,7 +12,7 @@ const API_BASE_URL =
 const ChangeNickname = ({ token, onNicknameChange }: ChangeNicknameProps) => {
   const navigate = useNavigate();
   const [newNickname, setNewNickname] = useState('');
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,7 +31,11 @@ const ChangeNickname = ({ token, onNicknameChange }: ChangeNicknameProps) => {
 
       if (!response.ok) {
         const errorData = (await response.json()) as { message?: string };
-        throw new Error(errorData.message != null ? errorData.message : 'Failed to update nickname');
+        throw new Error(
+          errorData.message != null
+            ? errorData.message
+            : 'Failed to update nickname',
+        );
       }
 
       await onNicknameChange();

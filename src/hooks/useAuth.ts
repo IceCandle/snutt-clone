@@ -60,7 +60,6 @@ const useAuth = () => {
     }
   };
 
-
   useEffect(() => {
     if (token != null) {
       fetchUserInfo(token).catch((err: unknown) => {
