@@ -60,13 +60,10 @@ const useAuth = () => {
     const initializeAuth = async () => {
       setIsLoading(true);
       if (token != null) {
-        await Promise.all([
-          fetchUserInfo(token),
-          fetchTableInfo(token)
-        ]);
+        await Promise.all([fetchUserInfo(token), fetchTableInfo(token)]);
       }
       setIsLoading(false);
-    }
+    };
     void initializeAuth();
   }, [token, fetchUserInfo, fetchTableInfo]);
 
