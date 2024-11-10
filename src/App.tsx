@@ -1,3 +1,4 @@
+import LoadingSpinner from './components/LoadingSpinner';
 import { ThemeProvider } from './contexts/ThemeContext';
 import useAuth from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
@@ -9,11 +10,16 @@ const App = () => {
     title,
     nickname,
     error,
+    isLoading,
     handleLogin,
     handleLogout,
     token,
     handleNicknameChange,
   } = useAuth();
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <ThemeProvider>
