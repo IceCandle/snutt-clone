@@ -17,10 +17,12 @@ const MyPage: React.FC<MyPageProps> = ({ nickname, onLogout }: MyPageProps) => {
         <div className="p-4 border-b">
           <h1 className="text-lg font-semibold">마이페이지</h1>
         </div>
-        
+
         <div className="p-4">
           <button
-            onClick={() => { navigate('/mypage/account'); }}
+            onClick={() => {
+              navigate('/mypage/account');
+            }}
             className="w-full p-4 text-left bg-white rounded-lg shadow mb-4 flex justify-between items-center"
           >
             <span>내 계정</span>

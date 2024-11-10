@@ -89,14 +89,14 @@ const useAuth = () => {
     localStorage.removeItem('token');
   };
 
-  return { 
-    tableList, 
-    title, 
-    nickname, 
-    error, 
-    handleLogin, 
+  return {
+    tableList,
+    title,
+    nickname,
+    error,
+    handleLogin,
     handleLogout,
-    token // Now exposing token
+    token, // Now exposing token
   };
 };
 

@@ -29,11 +29,7 @@ const UserInfoPage = ({
         <Route
           path="/"
           element={
-            <MainPage 
-              tableList={tableList} 
-              table_title={title} 
-              token={token}
-            />
+            <MainPage tableList={tableList} table_title={title} token={token} />
           }
         />
         <Route
@@ -47,10 +43,7 @@ const UserInfoPage = ({
         <Route
           path="/mypage/account/change-nickname"
           element={
-            <ChangeNickname 
-              token={token} 
-              onNicknameChange={onNicknameChange} 
-            />
+            <ChangeNickname token={token} onNicknameChange={onNicknameChange} />
           }
         />
       </Routes>

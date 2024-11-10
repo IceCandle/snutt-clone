@@ -23,18 +23,17 @@ const MainPage = ({ tableList, table_title, token }: MainPageProps) => {
 
   return (
     <div className="flex relative overflow-hidden flex-col h-screen max-w-[375px] mx-auto">
-      <Header 
-        totalCredit={totalCredit} 
-        title={title} 
+      <Header
+        totalCredit={totalCredit}
+        title={title}
         onMenuClick={handleDrawerToggle}
       />
-      <TimeTable
-        setTotalCredit={setTotalCredit}
-        tableList={tableList}
-      />
-      <TimeTableDrawer 
+      <TimeTable setTotalCredit={setTotalCredit} tableList={tableList} />
+      <TimeTableDrawer
         isOpen={isDrawerOpen}
-        onClose={() => { setIsDrawerOpen(false); }}
+        onClose={() => {
+          setIsDrawerOpen(false);
+        }}
         token={token ?? ''}
       />
       <Navbar selectedMenu="timetable" />

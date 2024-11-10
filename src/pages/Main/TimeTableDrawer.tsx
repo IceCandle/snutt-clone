@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Timetable {
   _id: string;
@@ -22,18 +22,27 @@ interface TimeTableDrawerProps {
   token: string;
 }
 
-const API_BASE_URL = 'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
+const API_BASE_URL =
+  'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
 
-export const TimeTableDrawer = ({ isOpen, onClose, token }: TimeTableDrawerProps) => {
+export const TimeTableDrawer = ({
+  isOpen,
+  onClose,
+  token,
+}: TimeTableDrawerProps) => {
   const [timetables, setTimetables] = useState<Timetable[]>([]);
   const [semesters, setSemesters] = useState<Semester[]>([]);
-  const [selectedTimetable, setSelectedTimetable] = useState<string | null>(null);
+  const [selectedTimetable, setSelectedTimetable] = useState<string | null>(
+    null,
+  );
   const [showAddSheet, setShowAddSheet] = useState(false);
   const [showRenameSheet, setShowRenameSheet] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [selectedSemester, setSelectedSemester] = useState<string>('');
-  const [targetTimetable, setTargetTimetable] = useState<Timetable | null>(null);
+  const [targetTimetable, setTargetTimetable] = useState<Timetable | null>(
+    null,
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -46,13 +55,13 @@ export const TimeTableDrawer = ({ isOpen, onClose, token }: TimeTableDrawerProps
     try {
       const response = await fetch(`${API_BASE_URL}/tables`, {
         headers: {
-          'x-access-token': token
-        }
+          'x-access-token': token,
+        },
       });
       if (!response.ok) throw new Error('Failed to fetch timetables');
       const data = await response.json();
       setTimetables(data);
-      if (data.length > 0 && (selectedTimetable == null)) {
+      if (data.length > 0 && selectedTimetable == null) {
         setSelectedTimetable(data[0]._id);
       }
     } catch (error) {
@@ -64,8 +73,8 @@ export const TimeTableDrawer = ({ isOpen, onClose, token }: TimeTableDrawerProps
     try {
       const response = await fetch(`${API_BASE_URL}/course_books`, {
         headers: {
-          'x-access-token': token
-        }
+          'x-access-token': token,
+        },
       });
       if (!response.ok) throw new Error('Failed to fetch semesters');
       const data = await response.json();
@@ -85,13 +94,13 @@ export const TimeTableDrawer = ({ isOpen, onClose, token }: TimeTableDrawerProps
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-access-token': token
+          'x-access-token': token,
         },
         body: JSON.stringify({
           year: parseInt(year ?? '0'),
           semester,
-          title: newTitle
-        })
+          title: newTitle,
+        }),
       });
       if (!response.ok) throw new Error('Failed to create timetable');
       await fetchTimetables();
@@ -102,16 +111,18 @@ export const TimeTableDrawer = ({ isOpen, onClose, token }: TimeTableDrawerProps
     }
   };
 
-
   const handleDeleteTimetable = async () => {
     if (targetTimetable == null) return;
     try {
-      const response = await fetch(`${API_BASE_URL}/tables/${targetTimetable._id}`, {
-        method: 'DELETE',
-        headers: {
-          'x-access-token': token
-        }
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/tables/${targetTimetable._id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'x-access-token': token,
+          },
+        },
+      );
       if (!response.ok) throw new Error('Failed to delete timetable');
       await fetchTimetables();
       setShowDeleteConfirm(false);
@@ -128,23 +139,36 @@ export const TimeTableDrawer = ({ isOpen, onClose, token }: TimeTableDrawerProps
       <div className="absolute left-0 top-0 bottom-0 w-80 bg-white shadow-lg">
         <div className="p-4 flex justify-between items-center border-b">
           <h2 className="text-lg font-semibold">시간표 목록</h2>
-          <button onClick={() => { setShowAddSheet(true); }} className="text-2xl">+</button>
-          <button onClick={onClose} className="text-gray-500">&times;</button>
+          <button
+            onClick={() => {
+              setShowAddSheet(true);
+            }}
+            className="text-2xl"
+          >
+            +
+          </button>
+          <button onClick={onClose} className="text-gray-500">
+            &times;
+          </button>
         </div>
-        
+
         <div className="p-4">
           {timetables.map((timetable) => (
-            <div 
-              key={timetable._id} 
+            <div
+              key={timetable._id}
               className="flex justify-between items-center p-2 hover:bg-gray-100 rounded"
             >
-              <div onClick={() => { setSelectedTimetable(timetable._id); }}>
+              <div
+                onClick={() => {
+                  setSelectedTimetable(timetable._id);
+                }}
+              >
                 <div className="font-medium">{timetable.title}</div>
                 <div className="text-sm text-gray-500">
                   {timetable.year}년 {timetable.semester}학기
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => {
                   setTargetTimetable(timetable);
                   setShowRenameSheet(true);
@@ -164,24 +188,33 @@ export const TimeTableDrawer = ({ isOpen, onClose, token }: TimeTableDrawerProps
               <input
                 type="text"
                 value={newTitle}
-                onChange={(e) => { setNewTitle(e.target.value); }}
+                onChange={(e) => {
+                  setNewTitle(e.target.value);
+                }}
                 placeholder="시간표 이름"
                 className="w-full p-2 border rounded mb-4"
               />
               <select
                 value={selectedSemester}
-                onChange={(e) => { setSelectedSemester(e.target.value); }}
+                onChange={(e) => {
+                  setSelectedSemester(e.target.value);
+                }}
                 className="w-full p-2 border rounded mb-4"
               >
                 {semesters.map((sem) => (
-                  <option key={`${sem.year}-${sem.semester}`} value={`${sem.year}-${sem.semester}`}>
+                  <option
+                    key={`${sem.year}-${sem.semester}`}
+                    value={`${sem.year}-${sem.semester}`}
+                  >
                     {sem.year}년 {sem.semester}학기
                   </option>
                 ))}
               </select>
               <div className="flex justify-end gap-2">
                 <button
-                  onClick={() => { setShowAddSheet(false); }}
+                  onClick={() => {
+                    setShowAddSheet(false);
+                  }}
                   className="px-4 py-2 text-gray-600"
                 >
                   취소
@@ -225,10 +258,14 @@ export const TimeTableDrawer = ({ isOpen, onClose, token }: TimeTableDrawerProps
         {showDeleteConfirm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-4 rounded-lg">
-              <h3 className="text-lg font-semibold mb-4">시간표를 삭제하시겠습니까?</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                시간표를 삭제하시겠습니까?
+              </h3>
               <div className="flex justify-end gap-2">
                 <button
-                  onClick={() => { setShowDeleteConfirm(false); }}
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                  }}
                   className="px-4 py-2 text-gray-600"
                 >
                   취소
