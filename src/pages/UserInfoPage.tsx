@@ -17,6 +17,7 @@ interface UserInfoPageProps {
   tableList: TimeRange[];
   title: string | null;
   token: string | null;
+  onNicknameChange: () => Promise<void>;
 }
 
 const UserInfoPage = ({
@@ -25,12 +26,9 @@ const UserInfoPage = ({
   tableList,
   title,
   token,
+  onNicknameChange,
 }: UserInfoPageProps) => {
   const { isDarkMode, toggleTheme } = useTheme();
-
-  function onNicknameChange(): Promise<void> {
-    throw new Error('Function not implemented.');
-  }
 
   return (
     <BrowserRouter>

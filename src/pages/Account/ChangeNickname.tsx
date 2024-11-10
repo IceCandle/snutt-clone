@@ -13,6 +13,7 @@ const ChangeNickname = ({ token, onNicknameChange }: ChangeNicknameProps) => {
   const navigate = useNavigate();
   const [newNickname, setNewNickname] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +30,8 @@ const ChangeNickname = ({ token, onNicknameChange }: ChangeNicknameProps) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update nickname');
+        const errorData = (await response.json()) as { message?: string };
+        throw new Error(errorData.message != null ? errorData.message : 'Failed to update nickname');
       }
 
       await onNicknameChange();
@@ -38,6 +40,8 @@ const ChangeNickname = ({ token, onNicknameChange }: ChangeNicknameProps) => {
       setError(
         err instanceof Error ? err.message : 'Failed to update nickname',
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -69,13 +73,17 @@ const ChangeNickname = ({ token, onNicknameChange }: ChangeNicknameProps) => {
           }}
           placeholder="새로운 닉네임"
           className="w-full p-2 border rounded mb-4"
+          disabled={isSubmitting}
         />
         {error != null && <p className="text-red-500 mb-4">{error}</p>}
         <button
           type="submit"
-          className="w-full p-3 bg-orange-500 text-white rounded"
+          className={`w-full p-3 bg-orange-500 text-white rounded ${
+            isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+          disabled={isSubmitting}
         >
-          변경하기
+          {isSubmitting ? '변경 중...' : '변경하기'}
         </button>
       </form>
     </div>

@@ -12,6 +12,7 @@ const App = () => {
     handleLogin,
     handleLogout,
     token,
+    handleNicknameChange,
   } = useAuth();
 
   return (
@@ -24,6 +25,7 @@ const App = () => {
             tableList={tableList}
             title={title}
             token={token}
+            onNicknameChange={handleNicknameChange}
           />
         ) : (
           <LoginPage onLogin={handleLogin} error={error} />
