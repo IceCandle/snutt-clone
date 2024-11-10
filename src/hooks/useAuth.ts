@@ -89,7 +89,15 @@ const useAuth = () => {
     localStorage.removeItem('token');
   };
 
-  return { tableList, title, nickname, error, handleLogin, handleLogout };
+  return { 
+    tableList, 
+    title, 
+    nickname, 
+    error, 
+    handleLogin, 
+    handleLogout,
+    token // Now exposing token
+  };
 };
 
 export default useAuth;

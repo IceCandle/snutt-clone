@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import type { TimeRange } from '../components/types';
+import AccountPage from './Account/AccountPage';
+import ChangeNickname from './Account/ChangeNickname';
 import MainPage from './Main/MainPage';
 import MyPage from './MyPage';
 
@@ -9,6 +11,8 @@ interface UserInfoPageProps {
   onLogout: () => void;
   tableList: TimeRange[];
   title: string | null;
+  token: string | null;
+  onNicknameChange: () => Promise<void>;
 }
 
 const UserInfoPage = ({
@@ -16,17 +20,38 @@ const UserInfoPage = ({
   onLogout,
   tableList,
   title,
+  token,
+  onNicknameChange,
 }: UserInfoPageProps) => {
   return (
     <BrowserRouter>
       <Routes>
         <Route
-          element={<MainPage tableList={tableList} table_title={title} />}
           path="/"
+          element={
+            <MainPage 
+              tableList={tableList} 
+              table_title={title} 
+              token={token}
+            />
+          }
         />
         <Route
-          element={<MyPage nickname={nickname} onLogout={onLogout} />}
           path="/mypage"
+          element={<MyPage nickname={nickname} onLogout={onLogout} />}
+        />
+        <Route
+          path="/mypage/account"
+          element={<AccountPage nickname={nickname} />}
+        />
+        <Route
+          path="/mypage/account/change-nickname"
+          element={
+            <ChangeNickname 
+              token={token} 
+              onNicknameChange={onNicknameChange} 
+            />
+          }
         />
       </Routes>
     </BrowserRouter>
