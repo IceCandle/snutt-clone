@@ -29,7 +29,6 @@ const UserInfoPage = ({
   onNicknameChange,
 }: UserInfoPageProps) => {
   const { isDarkMode, toggleTheme } = useTheme();
-
   return (
     <BrowserRouter>
       <Routes>
