@@ -1,32 +1,43 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Navbar } from '../../components/Navbar';
 import type { TimeRange } from '../../components/types';
 import { Header } from './Header';
 import { TimeTable } from './TimeTable';
+import { TimeTableDrawer } from './TimeTableDrawer';
 
-interface UserInfoPageProps {
+interface MainPageProps {
   tableList: TimeRange[];
   table_title: string | null;
+  token: string | null;
 }
 
-const MainPage = ({ tableList, table_title }: UserInfoPageProps) => {
-  // const [timetableId, setTimetableId] = useState<string | null>(null);
+const MainPage = ({ tableList, table_title, token }: MainPageProps) => {
   const [totalCredit, setTotalCredit] = useState(0);
-  const [title, setTitle] = useState<string | null>('');
+  const [title] = useState<string | null>(table_title);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  useEffect(() => {
-    setTitle(table_title);
-  }, [table_title]);
+  const handleDrawerToggle = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
 
   return (
     <div className="flex relative overflow-hidden flex-col h-screen max-w-[375px] mx-auto">
-      <Header totalCredit={totalCredit} title={title} />
-      <TimeTable
-        // timetableId={timetableId}
-        // setTimetableId={setTimetableId}
-        setTotalCredit={setTotalCredit}
-        tableList={tableList}
+      <Header
+        totalCredit={totalCredit}
+        title={title}
+        onMenuClick={handleDrawerToggle}
+      />
+      <TimeTable setTotalCredit={setTotalCredit} tableList={tableList} />
+      <TimeTableDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => {
+          setIsDrawerOpen(false);
+        }}
+        token={token ?? ''}
+        onTimeTableSelect={function (): Promise<void> {
+          throw new Error('Function not implemented.');
+        }}
       />
       <Navbar selectedMenu="timetable" />
     </div>
