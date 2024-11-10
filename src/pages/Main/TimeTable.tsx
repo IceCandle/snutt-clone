@@ -110,10 +110,12 @@ export const TimeTable = ({
                 gridRowEnd: (time.endMinute - 540) / 5 + 2,
               }}
             >
-              <span className="text-[10px] font-normal">
-                {time.course_title}
-              </span>
-              <span className="text-[10px] font-bold">{time.place}</span>
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] font-normal">
+                  {time.course_title}
+                </span>
+                <span className="text-[10px] font-bold">{time.place}</span>
+              </div>
             </div>
           );
         })}
