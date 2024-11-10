@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Navbar } from '../components/Navbar';
@@ -8,8 +7,12 @@ interface MyPageProps {
   onLogout: () => void;
 }
 
-const MyPage: React.FC<MyPageProps> = ({ nickname, onLogout }: MyPageProps) => {
+const MyPage = ({ nickname, onLogout }: MyPageProps) => {
   const navigate = useNavigate();
+  const handleLogout = () => {
+    onLogout();
+    navigate('/');
+  };
 
   return (
     <div className="flex relative overflow-hidden flex-col h-screen max-w-[375px] mx-auto">
@@ -30,7 +33,7 @@ const MyPage: React.FC<MyPageProps> = ({ nickname, onLogout }: MyPageProps) => {
           </button>
 
           <button
-            onClick={onLogout}
+            onClick={handleLogout}
             className="w-full p-4 text-left text-red-500 bg-white rounded-lg shadow"
           >
             로그아웃
