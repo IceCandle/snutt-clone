@@ -37,7 +37,9 @@ const UserInfoPage = ({
       <Routes>
         <Route
           path="/"
-          element={<MainPage tableList={tableList} table_title={title} token={token} />}
+          element={
+            <MainPage tableList={tableList} table_title={title} token={token} />
+          }
         />
         <Route
           path="/mypage"
@@ -49,11 +51,18 @@ const UserInfoPage = ({
         />
         <Route
           path="/mypage/account/change-nickname"
-          element={<ChangeNickname token={token} onNicknameChange={onNicknameChange} />}
+          element={
+            <ChangeNickname token={token} onNicknameChange={onNicknameChange} />
+          }
         />
         <Route
           path="/mypage/color-scheme"
-          element={<ColorSchemePage isDarkMode={isDarkMode} onToggleTheme={toggleTheme} />}
+          element={
+            <ColorSchemePage
+              isDarkMode={isDarkMode}
+              onToggleTheme={toggleTheme}
+            />
+          }
         />
         <Route
           path="/timetables/:timetableId/lectures"
@@ -63,10 +72,7 @@ const UserInfoPage = ({
           path="/timetables/:timetableId/lectures/:lectureId"
           element={<LectureView />}
         />
-        <Route
-          path="/timetables/:timetableId/new"
-          element={<NewLecture />}
-        />
+        <Route path="/timetables/:timetableId/new" element={<NewLecture />} />
       </Routes>
     </BrowserRouter>
   );

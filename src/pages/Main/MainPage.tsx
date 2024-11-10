@@ -33,10 +33,12 @@ const MainPage = ({ tableList, table_title, token }: MainPageProps) => {
         isOpen={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false);
-        } }
-        token={token ?? ''} onTimeTableSelect={function (): Promise<void> {
+        }}
+        token={token ?? ''}
+        onTimeTableSelect={function (): Promise<void> {
           throw new Error('Function not implemented.');
-        } }      />
+        }}
+      />
       <Navbar selectedMenu="timetable" />
     </div>
   );

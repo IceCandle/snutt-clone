@@ -18,7 +18,8 @@ interface TimeTableResponse {
   lecture_list: Lecture[];
 }
 
-const API_BASE_URL = 'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
+const API_BASE_URL =
+  'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
 
 export const CourseList = () => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
@@ -35,11 +36,11 @@ export const CourseList = () => {
 
         const response = await fetch(`${API_BASE_URL}/tables/${timetableId}`, {
           headers: {
-            'x-access-token': token
+            'x-access-token': token,
           },
         });
         if (!response.ok) throw new Error('Failed to fetch lectures');
-        const data = await response.json() as TimeTableResponse;
+        const data = (await response.json()) as TimeTableResponse;
         setLectures(data.lecture_list);
       } catch (error) {
         console.error('Error fetching lectures:', error);
@@ -87,17 +88,22 @@ export const CourseList = () => {
         {lectures.map((lecture) => (
           <div
             key={lecture._id}
-            onClick={() => { handleLectureClick(lecture._id); }}
+            onClick={() => {
+              handleLectureClick(lecture._id);
+            }}
             className="p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
           >
-            <h3 className="font-medium dark:text-white">{lecture.course_title}</h3>
+            <h3 className="font-medium dark:text-white">
+              {lecture.course_title}
+            </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {lecture.instructor} • {lecture.credit}학점
             </p>
             <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               {lecture.class_time_json.map((time, index) => (
                 <div key={index}>
-                  {time.day}요일 {time.start_time}-{time.end_time} ({time.place})
+                  {time.day}요일 {time.start_time}-{time.end_time} ({time.place}
+                  )
                 </div>
               ))}
             </div>

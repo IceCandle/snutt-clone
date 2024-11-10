@@ -46,10 +46,13 @@ interface LectureDetailProps {
   isEditing?: boolean;
 }
 
-
 const getDayString = (day: string): string => {
   const days = ['월', '화', '수', '목', '금', '토', '일'];
-  return (days[parseInt(day)]) || day;
+  const index = parseInt(day);
+  if (!isNaN(index) && index >= 0 && index < days.length) {
+    return days[index] ?? '';
+  }
+  return day;
 };
 
 export const LectureDetail = ({
@@ -59,7 +62,7 @@ export const LectureDetail = ({
 }: LectureDetailProps) => {
   const navigate = useNavigate();
   const { timetableId } = useParams();
-  
+
   const handleDelete = async () => {
     if (!window.confirm('정말로 이 강의를 삭제하시겠습니까?')) return;
     if (onDelete != null) await onDelete();
@@ -72,7 +75,9 @@ export const LectureDetail = ({
     <div className="flex flex-col h-full bg-white dark:bg-gray-900">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
         <button
-          onClick={() => { navigate(-1); }}
+          onClick={() => {
+            navigate(-1);
+          }}
           className="mr-4 text-gray-600 dark:text-gray-300"
         >
           ←
@@ -106,16 +111,24 @@ export const LectureDetail = ({
             <h3 className="font-semibold mb-2 dark:text-white">강의 정보</h3>
             <dl className="grid grid-cols-2 gap-2 text-sm">
               <dt className="text-gray-500 dark:text-gray-400">학점</dt>
-              <dd className="text-gray-900 dark:text-gray-200">{lecture?.credit}</dd>
-              
+              <dd className="text-gray-900 dark:text-gray-200">
+                {lecture?.credit}
+              </dd>
+
               <dt className="text-gray-500 dark:text-gray-400">분류</dt>
-              <dd className="text-gray-900 dark:text-gray-200">{lecture?.classification}</dd>
-              
+              <dd className="text-gray-900 dark:text-gray-200">
+                {lecture?.classification}
+              </dd>
+
               <dt className="text-gray-500 dark:text-gray-400">수강정원</dt>
-              <dd className="text-gray-900 dark:text-gray-200">{lecture?.quota}</dd>
-              
+              <dd className="text-gray-900 dark:text-gray-200">
+                {lecture?.quota}
+              </dd>
+
               <dt className="text-gray-500 dark:text-gray-400">신입생정원</dt>
-              <dd className="text-gray-900 dark:text-gray-200">{lecture?.freshman_quota}</dd>
+              <dd className="text-gray-900 dark:text-gray-200">
+                {lecture?.freshman_quota}
+              </dd>
             </dl>
           </div>
 
@@ -130,8 +143,10 @@ export const LectureDetail = ({
               <button className="w-full p-3 bg-yellow-500 text-white rounded-lg">
                 빈자리 알림
               </button>
-              <button 
-                onClick={() => { void handleDelete(); }}
+              <button
+                onClick={() => {
+                  void handleDelete();
+                }}
                 className="w-full p-3 bg-red-500 text-white rounded-lg"
               >
                 강의 삭제

@@ -4,7 +4,15 @@ import LoginPage from './pages/LoginPage';
 import UserInfoPage from './pages/UserInfoPage';
 
 const App = () => {
-  const { tableList, title, nickname, error, handleLogin, handleLogout, token } = useAuth();
+  const {
+    tableList,
+    title,
+    nickname,
+    error,
+    handleLogin,
+    handleLogout,
+    token,
+  } = useAuth();
 
   return (
     <ThemeProvider>
