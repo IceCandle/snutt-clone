@@ -11,6 +11,7 @@ const useAuth = () => {
   const [tableList, setTableInfo] = useState<TimeRange[]>([]);
   const [title, setTitle] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchUserInfo = useCallback(async (authToken: string) => {
     try {
@@ -51,34 +52,25 @@ const useAuth = () => {
           ? err.message
           : 'Failed to fetch table info. Please try logging in again.';
       setError(errorMessage);
+      throw err;
     }
   }, []);
 
-  const handleNicknameChange = async () => {
-    if (token != null) {
-      await fetchUserInfo(token);
-    }
-  };
-
   useEffect(() => {
-    if (token != null) {
-      fetchUserInfo(token).catch((err: unknown) => {
-        setError(
-          err instanceof Error ? err.message : 'Error fetching user info.',
-        );
-      });
-
-      fetchTableInfo(token).catch((err: unknown) => {
-        setError(
-          err instanceof Error ? err.message : 'Error fetching table info.',
-        );
-      });
-    }
+    const initializeAuth = async () => {
+      setIsLoading(true);
+      if (token != null) {
+        await Promise.all([fetchUserInfo(token), fetchTableInfo(token)]);
+      }
+      setIsLoading(false);
+    };
+    void initializeAuth();
   }, [token, fetchUserInfo, fetchTableInfo]);
 
   const handleLogin = async (username: string, password: string) => {
     try {
       setError(null);
+      setIsLoading(true);
       const response = await login(username, password);
       setToken(response.token);
       localStorage.setItem('token', response.token);
@@ -88,6 +80,8 @@ const useAuth = () => {
       const errorMessage =
         err instanceof Error ? err.message : 'Login failed. Please try again.';
       setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -97,11 +91,23 @@ const useAuth = () => {
     localStorage.removeItem('token');
   };
 
+  const handleNicknameChange = async () => {
+    if (token != null) {
+      setIsLoading(true);
+      try {
+        await fetchUserInfo(token);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
   return {
     tableList,
     title,
     nickname,
     error,
+    isLoading,
     handleLogin,
     handleLogout,
     token,
