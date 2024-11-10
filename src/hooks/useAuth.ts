@@ -56,12 +56,6 @@ const useAuth = () => {
     }
   }, []);
 
-  const handleNicknameChange = async () => {
-    if (token != null) {
-      await fetchUserInfo(token);
-    }
-  };
-
   useEffect(() => {
     const initializeAuth = async () => {
       setIsLoading(true);
