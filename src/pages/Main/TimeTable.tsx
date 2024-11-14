@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 
-import type { TableResponse, ClassTime } from '../../components/types';
+import type { ClassTime, TableResponse } from '../../components/types';
 
 export const TimeTable = ({
   setTotalCredit,
   tableList,
 }: {
   setTotalCredit: (credit: number) => void;
-  tableList?: TableResponse; // 수정된 부분
+  tableList?: TableResponse;
 }) => {
   const hourlist = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const daylist = ['월', '화', '수', '목', '금'];

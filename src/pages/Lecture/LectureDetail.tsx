@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
+
 import type { Lecture } from '../../components/types';
 
 interface LectureDetailProps {
@@ -7,13 +8,12 @@ interface LectureDetailProps {
   isEditing?: boolean;
 }
 
-const getDayString = (day: number): string | undefined => {
+const getDayString = (day: number): string | null => {
   const days = ['월', '화', '수', '목', '금', '토', '일'];
-  const index = day;
-  if (!isNaN(index) && index >= 0 && index < days.length) {
-    return days[index] ?? '';
+  if (!isNaN(day) && day >= 0 && day < days.length) {
+    return days[day] ?? '';
   }
-  return days[day];
+  return null;
 };
 
 export const LectureDetail = ({

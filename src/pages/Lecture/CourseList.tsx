@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { TableResponse, Lecture } from '../../components/types';
+
+import type { Lecture, TableResponse } from '../../components/types';
 
 const API_BASE_URL =
   'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
 
 export const CourseList = () => {
+  const { timetableId } = useParams<{ timetableId: string }>();
   const [lectures, setLectures] = useState<Lecture[]>([]);
   const navigate = useNavigate();
-  const { timetableId } = useParams<{ timetableId: string }>();
 
   useEffect(() => {
     const fetchLectures = async () => {
