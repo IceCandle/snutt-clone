@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { getTableInfo, getUserInfo, login } from '../api/api';
-import type { TimeRange } from '../components/types';
+import type { TableResponse } from '../components/types';
 
 const useAuth = () => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem('token'),
   );
   const [nickname, setNickname] = useState<string | null>(null);
-  const [tableList, setTableInfo] = useState<TimeRange[]>([]);
+  const [tableList, setTableInfo] = useState<TableResponse>();
   const [title, setTitle] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -31,21 +31,10 @@ const useAuth = () => {
 
   const fetchTableInfo = useCallback(async (authToken: string) => {
     try {
-      const tableInfo = await getTableInfo(authToken);
-      const newTableInfo: TimeRange[] = tableInfo.lecture_list.flatMap(
-        (lecture) =>
-          lecture.class_time_json.map((classTime) => ({
-            day: classTime.day,
-            startMinute: classTime.startMinute,
-            endMinute: classTime.endMinute,
-            course_title: lecture.course_title,
-            place: classTime.place,
-            credit: lecture.credit,
-          })),
-      );
-      const table_title = tableInfo.title;
+      const newTable = await getTableInfo(authToken);
+      const table_title = newTable.title;
       setTitle(table_title);
-      setTableInfo(newTableInfo);
+      setTableInfo(newTable as TableResponse);
     } catch (err) {
       const errorMessage =
         err instanceof Error

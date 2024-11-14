@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import type { TimeRange } from '../components/types';
+import type { TableResponse } from '../components/types';
 import { useTheme } from '../contexts/ThemeContext';
 import AccountPage from './Account/AccountPage';
 import ChangeNickname from './Account/ChangeNickname';
@@ -14,7 +14,7 @@ import MyPage from './MyPage';
 interface UserInfoPageProps {
   nickname: string;
   onLogout: () => void;
-  tableList: TimeRange[];
+  tableList?: TableResponse;
   title: string | null;
   token: string | null;
   onNicknameChange: () => Promise<void>;
