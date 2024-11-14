@@ -16,7 +16,7 @@ export const TimeTable = ({
   const rowCount = hourlist.length * 12;
 
   useEffect(() => {
-    if (tableList) {
+    if (tableList != null) {
       // tableList가 undefined가 아닌 경우에만 실행
       const totalCredit = tableList.lecture_list.reduce(
         (sum: number, lecture) => sum + lecture.credit,
