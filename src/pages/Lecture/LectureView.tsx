@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { LectureDetail } from './LectureDetail';
-import type {
-  TableResponse,
-  LectureBuilding,
-  Lecture,
-} from '../../components/types';
+import type { TableResponse, Lecture } from '../../components/types';
 
 const API_BASE_URL =
   'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';

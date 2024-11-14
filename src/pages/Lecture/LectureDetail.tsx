@@ -1,9 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import type {
-  LectureBuilding,
-  ClassTime,
-  Lecture,
-} from '../../components/types';
+import type { Lecture } from '../../components/types';
 
 interface LectureDetailProps {
   lecture?: Lecture;
