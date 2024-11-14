@@ -3711,7 +3711,6 @@ __metadata:
     "@woohm402/eslint-config-react": "npm:0.7.1"
     autoprefixer: "npm:10.4.20"
     eslint: "npm:9.11.1"
-    eslint-plugin-simple-import-sort: "npm:12.1.1"
     knip: "npm:5.30.6"
     postcss: "npm:8.4.47"
     prettier: "npm:3.3.3"
