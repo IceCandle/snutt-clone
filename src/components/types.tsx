@@ -1,9 +1,9 @@
-export interface Location {
+interface Location {
   latitude: number;
   longitude: number;
 }
 
-export interface LectureBuilding {
+interface LectureBuilding {
   id: string;
   buildingNumber: string;
   buildingNameKor: string;
@@ -25,12 +25,12 @@ export interface ClassTime {
   lectureBuildings: LectureBuilding[];
 }
 
-export interface Color {
+interface Color {
   bg: string;
   fg: string;
 }
 
-export interface SnuttEvLecture {
+interface SnuttEvLecture {
   evLectureId: number;
 }
 
