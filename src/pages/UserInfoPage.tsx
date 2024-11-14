@@ -14,7 +14,7 @@ import MyPage from './MyPage';
 interface UserInfoPageProps {
   nickname: string;
   onLogout: () => void;
-  tableList: TableResponse;
+  tableList?: TableResponse;
   title: string | null;
   token: string | null;
   onNicknameChange: () => Promise<void>;

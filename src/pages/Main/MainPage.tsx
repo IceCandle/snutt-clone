@@ -7,7 +7,7 @@ import { TimeTable } from './TimeTable';
 import { TimeTableDrawer } from './TimeTableDrawer';
 
 interface MainPageProps {
-  tableList: TableResponse;
+  tableList: TableResponse | undefined;
   table_title: string | null;
   token: string | null;
 }
