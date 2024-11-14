@@ -14,15 +14,59 @@ interface UserInfoResponse {
 }
 
 interface TableResponse {
+  _id: string;
+  user_id: string;
+  year: number;
+  semester: string;
   lecture_list: {
+    _id: string;
+    academic_year: string;
+    category: string;
     class_time_json: {
       day: number;
       place: string;
       startMinute: number;
       endMinute: number;
+      start_time: string;
+      end_time: string;
+      len: number;
+      start: number;
+      lectureBuildings: {
+        id: string;
+        buildingNumber: string;
+        buildingNameKor: string;
+        buildingNameEng: string;
+        locationInDMS: {
+          latitude: number;
+          longitude: number;
+        };
+        locationInDecimal: {
+          latitude: number;
+          longitude: number;
+        };
+        campus: string;
+      }[];
     }[];
-    course_title: string;
+    classification: string;
     credit: number;
+    department: string;
+    instructor: string;
+    lecture_number: string;
+    quota: number;
+    freshman_quota: number;
+    remark: string;
+    course_number: string;
+    course_title: string;
+    color: {
+      bg: string;
+      fg: string;
+    };
+    colorIndex: number;
+    lecture_id: string;
+    snuttEvLecture: {
+      evLectureId: number;
+    };
+    class_time_mask: number[];
   }[];
   title: string;
 }
@@ -79,25 +123,26 @@ export const getUserInfo = async (token: string): Promise<UserInfoResponse> => {
 };
 
 export const getTableInfo = async (token: string): Promise<TableResponse> => {
-  // try {
-  const response = await fetch(`${API_BASE_URL}/tables/recent`, {
-    headers: {
-      'x-access-token': token,
-    },
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/tables/recent`, {
+      headers: {
+        'x-access-token': token,
+      },
+    });
 
-  if (!response.ok) {
-    const errorData = (await response.json().catch(() => ({}))) as unknown as {
-      message?: string;
-    };
-    throw new Error(errorData.message ?? 'Failed to fetch table info');
+    if (!response.ok) {
+      const errorData = (await response
+        .json()
+        .catch(() => ({}))) as unknown as {
+        message?: string;
+      };
+      throw new Error(errorData.message ?? 'Failed to fetch table info');
+    }
+    return (await response.json()) as TableResponse;
+  } catch (error) {
+    // 그 외의 예외처리
+    throw new Error(
+      error instanceof Error ? error.message : 'Unexpected error during login.',
+    );
   }
-  return (await response.json()) as TableResponse;
-  // }
-  // catch (error) {
-  //   // 그 외의 예외처리
-  //   throw new Error(
-  //     error instanceof Error ? error.message : 'Unexpected error during login.',
-  // );
-  // }
 };

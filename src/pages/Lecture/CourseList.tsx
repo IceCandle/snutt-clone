@@ -1,22 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-interface Lecture {
-  _id: string;
-  course_title: string;
-  instructor: string;
-  credit: number;
-  class_time_json: Array<{
-    day: string;
-    start_time: string;
-    end_time: string;
-    place: string;
-  }>;
-}
-
-interface TimeTableResponse {
-  lecture_list: Lecture[];
-}
+import type { TableResponse, Lecture } from '../../components/types';
 
 const API_BASE_URL =
   'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
@@ -40,7 +24,7 @@ export const CourseList = () => {
           },
         });
         if (!response.ok) throw new Error('Failed to fetch lectures');
-        const data = (await response.json()) as TimeTableResponse;
+        const data = (await response.json()) as TableResponse;
         setLectures(data.lecture_list);
       } catch (error) {
         console.error('Error fetching lectures:', error);

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
 import { Navbar } from '../../components/Navbar';
-import type { TimeRange } from '../../components/types';
+import type { TableResponse } from '../../components/types';
 import { Header } from './Header';
 import { TimeTable } from './TimeTable';
 import { TimeTableDrawer } from './TimeTableDrawer';
 
 interface MainPageProps {
-  tableList: TimeRange[];
+  tableList: TableResponse;
   table_title: string | null;
   token: string | null;
 }

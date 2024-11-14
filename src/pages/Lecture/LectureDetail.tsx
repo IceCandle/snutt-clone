@@ -1,44 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
-
-interface Building {
-  buildingNumber: string;
-  buildingNameKor: string;
-  buildingNameEng: string;
-  locationInDecimal: {
-    latitude: number;
-    longitude: number;
-  };
-  campus: string;
-}
-
-interface ClassTime {
-  day: string;
-  place: string;
-  startMinute: number;
-  endMinute: number;
-  start_time: string;
-  end_time: string;
-  len: number;
-  start: number;
-  lectureBuildings?: Building[];
-}
-
-interface Lecture {
-  _id: string;
-  academic_year: string;
-  category: string;
-  class_time_json: ClassTime[];
-  classification: string;
-  credit: number;
-  department: string;
-  instructor: string;
-  lecture_number: string;
-  quota: number;
-  freshman_quota: number;
-  remark: string;
-  course_number: string;
-  course_title: string;
-}
+import type {
+  LectureBuilding,
+  ClassTime,
+  Lecture,
+} from '../../components/types';
 
 interface LectureDetailProps {
   lecture?: Lecture;
@@ -46,13 +11,13 @@ interface LectureDetailProps {
   isEditing?: boolean;
 }
 
-const getDayString = (day: string): string => {
+const getDayString = (day: number): string | undefined => {
   const days = ['월', '화', '수', '목', '금', '토', '일'];
-  const index = parseInt(day);
+  const index = day;
   if (!isNaN(index) && index >= 0 && index < days.length) {
     return days[index] ?? '';
   }
-  return day;
+  return days[day];
 };
 
 export const LectureDetail = ({

@@ -1,17 +1,13 @@
 import { useEffect } from 'react';
 
-import type { TimeRange } from '../../components/types';
+import type { TableResponse, Lecture, ClassTime } from '../../components/types';
 
 export const TimeTable = ({
-  //   timetableId,
-  //   setTimetableId,
   setTotalCredit,
   tableList,
 }: {
-  //   timetableId: string | null;
-  //   setTimetableId: (timetableId: string) => void;
   setTotalCredit: (credit: number) => void;
-  tableList: TimeRange[];
+  tableList: TableResponse;
 }) => {
   const hourlist = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const daylist = ['월', '화', '수', '목', '금'];
@@ -20,8 +16,8 @@ export const TimeTable = ({
   const rowCount = hourlist.length * 12;
 
   useEffect(() => {
-    const totalCredit = tableList.reduce(
-      (sum: number, timeRange: TimeRange) => sum + timeRange.credit,
+    const totalCredit = tableList.lecture_list.reduce(
+      (sum: number, lecture) => sum + lecture.credit,
       0,
     );
     setTotalCredit(totalCredit);
@@ -98,27 +94,27 @@ export const TimeTable = ({
           ></div>
         ))}
 
-        {tableList.map((time, i) => {
-          return (
+        {tableList.lecture_list.map((lecture, i) =>
+          lecture.class_time_json.map((classTime: ClassTime, j: number) => (
             <div
-              key={i}
+              key={`${i}-${j}`}
               className="col-start-2 col-end-6 row-start-2 row-end-3 bg-[#f58d3d] text-white text-xs flex justify-center items-center"
               style={{
-                gridColumnStart: time.day + 2,
-                gridColumnEnd: time.day + 3,
-                gridRowStart: (time.startMinute - 540) / 5 + 2,
-                gridRowEnd: (time.endMinute - 540) / 5 + 2,
+                gridColumnStart: classTime.day + 2,
+                gridColumnEnd: classTime.day + 3,
+                gridRowStart: (classTime.startMinute - 540) / 5 + 2,
+                gridRowEnd: (classTime.endMinute - 540) / 5 + 2,
               }}
             >
               <div className="flex flex-col items-center">
                 <span className="text-[10px] font-normal">
-                  {time.course_title}
+                  {lecture.course_title}
                 </span>
-                <span className="text-[10px] font-bold">{time.place}</span>
+                <span className="text-[10px] font-bold">{classTime.place}</span>
               </div>
             </div>
-          );
-        })}
+          )),
+        )}
       </div>
     </div>
   );

@@ -2,51 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { LectureDetail } from './LectureDetail';
-
-interface Building {
-  id: string;
-  buildingNumber: string;
-  buildingNameKor: string;
-  buildingNameEng: string;
-  locationInDecimal: {
-    latitude: number;
-    longitude: number;
-  };
-  campus: string;
-}
-
-interface ClassTime {
-  day: string;
-  place: string;
-  startMinute: number;
-  endMinute: number;
-  start_time: string;
-  end_time: string;
-  len: number;
-  start: number;
-  lectureBuildings?: Building[];
-}
-
-interface Lecture {
-  _id: string;
-  academic_year: string;
-  category: string;
-  class_time_json: ClassTime[];
-  classification: string;
-  credit: number;
-  department: string;
-  instructor: string;
-  lecture_number: string;
-  quota: number;
-  freshman_quota: number;
-  remark: string;
-  course_number: string;
-  course_title: string;
-}
-
-interface TableResponse {
-  lecture_list: Lecture[];
-}
+import type {
+  TableResponse,
+  LectureBuilding,
+  Lecture,
+} from '../../components/types';
 
 const API_BASE_URL =
   'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
