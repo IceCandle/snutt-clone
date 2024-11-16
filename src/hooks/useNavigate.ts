@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 interface Navigation {
   toMain: () => void;
   toMypage: () => void;
+  toLectureList: (tableId: string) => void;
 }
 
 export const useNavigation = (): Navigation => {
@@ -15,5 +16,9 @@ export const useNavigation = (): Navigation => {
     navigate('/mypage');
   };
 
-  return { toMain, toMypage };
+  const toLectureList = (tableId: string) => {
+    navigate(`/timetables/${tableId}/lectures`);
+  };
+
+  return { toMain, toMypage, toLectureList };
 };

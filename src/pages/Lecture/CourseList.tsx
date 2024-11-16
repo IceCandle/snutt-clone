@@ -1,39 +1,11 @@
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import type { Lecture, TableResponse } from '../../components/types';
 
-const API_BASE_URL =
-  'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
-
-export const CourseList = () => {
+export const CourseList = (tableList: TableResponse) => {
   const { timetableId } = useParams<{ timetableId: string }>();
-  const [lectures, setLectures] = useState<Lecture[]>([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchLectures = async () => {
-      if (timetableId == null) return;
-
-      try {
-        const token = localStorage.getItem('token');
-        if (token == null) return;
-
-        const response = await fetch(`${API_BASE_URL}/tables/${timetableId}`, {
-          headers: {
-            'x-access-token': token,
-          },
-        });
-        if (!response.ok) throw new Error('Failed to fetch lectures');
-        const data = (await response.json()) as TableResponse;
-        setLectures(data.lecture_list);
-      } catch (error) {
-        console.error('Error fetching lectures:', error);
-      }
-    };
-
-    void fetchLectures();
-  }, [timetableId]);
+  const daylist = ['월', '화', '수', '목', '금'];
 
   const handleBack = () => {
     navigate(-1);
@@ -70,7 +42,7 @@ export const CourseList = () => {
       </div>
 
       <div className="flex-1 overflow-auto">
-        {lectures.map((lecture) => (
+        {tableList.lecture_list.map((lecture: Lecture) => (
           <div
             key={lecture._id}
             onClick={() => {
@@ -82,13 +54,14 @@ export const CourseList = () => {
               {lecture.course_title}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {lecture.instructor} • {lecture.credit}학점
+              {lecture.instructor !== '' ? lecture.instructor : '---'} /{' '}
+              {lecture.credit}학점
             </p>
             <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               {lecture.class_time_json.map((time, index) => (
                 <div key={index}>
-                  {time.day}요일 {time.start_time}-{time.end_time} ({time.place}
-                  )
+                  {daylist[time.day]}요일 {time.start_time}-{time.end_time} (
+                  {time.place})
                 </div>
               ))}
             </div>

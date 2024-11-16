@@ -14,7 +14,7 @@ import MyPage from './MyPage';
 interface UserInfoPageProps {
   nickname: string;
   onLogout: () => void;
-  tableList?: TableResponse;
+  tableList: TableResponse;
   title: string | null;
   token: string | null;
   onNicknameChange: () => Promise<void>;
@@ -29,6 +29,9 @@ const UserInfoPage = ({
   onNicknameChange,
 }: UserInfoPageProps) => {
   const { isDarkMode, toggleTheme } = useTheme();
+  const courselist_path = `/timetables/${tableList._id}/lectures`;
+  const newlecture_path = `/timetables/${tableList._id}/new`;
+
   return (
     <BrowserRouter>
       <Routes>
@@ -61,15 +64,12 @@ const UserInfoPage = ({
             />
           }
         />
-        <Route
-          path="/timetables/:timetableId/lectures"
-          element={<CourseList />}
-        />
+        <Route path={courselist_path} element={<CourseList {...tableList} />} />
         <Route
           path="/timetables/:timetableId/lectures/:lectureId"
           element={<LectureView />}
         />
-        <Route path="/timetables/:timetableId/new" element={<NewLecture />} />
+        <Route path={newlecture_path} element={<NewLecture />} />
       </Routes>
     </BrowserRouter>
   );
