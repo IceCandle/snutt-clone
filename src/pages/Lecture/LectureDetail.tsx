@@ -1,5 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
+import alarm from '../../assets/header-alarm-icon.png';
+import bookmark from '../../assets/lecturedetail-bookmark-white.png';
 import type { Lecture } from '../../components/types';
 
 interface LectureDetailProps {
@@ -44,6 +46,17 @@ export const LectureDetail = ({
           ←
         </button>
         <h1 className="text-lg font-semibold dark:text-white">강의 상세</h1>
+        <div className="flex gap-2 items-center ml-auto">
+          <button className="text-xs text-primary">
+            <img src={alarm} alt="알림" className="w-8 h-8" />
+          </button>
+          <button className="text-xs text-primary">
+            <img src={bookmark} alt="북마크" className="w-6 h-6" />
+          </button>
+          <button className="text-xl font-semibold dark:text-white">
+            편집
+          </button>
+        </div>
       </div>
 
       <div className="p-4 space-y-4 flex-1 overflow-auto">
@@ -61,8 +74,7 @@ export const LectureDetail = ({
             <h3 className="font-semibold mb-2 dark:text-white">수업 시간</h3>
             {lecture?.class_time_json.map((time, index) => (
               <div key={index} className="text-gray-600 dark:text-gray-300">
-                {getDayString(time.day)} {time.start_time}-{time.end_time}
-                <br />
+                {getDayString(time.day)} {time.start_time}-{time.end_time} /{' '}
                 {time.place}
               </div>
             ))}

@@ -29,8 +29,6 @@ const UserInfoPage = ({
   onNicknameChange,
 }: UserInfoPageProps) => {
   const { isDarkMode, toggleTheme } = useTheme();
-  const courselist_path = `/timetables/${tableList._id}/lectures`;
-  const newlecture_path = `/timetables/${tableList._id}/new`;
 
   return (
     <BrowserRouter>
@@ -64,12 +62,15 @@ const UserInfoPage = ({
             />
           }
         />
-        <Route path={courselist_path} element={<CourseList {...tableList} />} />
+        <Route
+          path="/timetables/:timetableId/lectures"
+          element={<CourseList {...tableList} />}
+        />
         <Route
           path="/timetables/:timetableId/lectures/:lectureId"
           element={<LectureView />}
         />
-        <Route path={newlecture_path} element={<NewLecture />} />
+        <Route path="/timetables/:timetableId/new" element={<NewLecture />} />
       </Routes>
     </BrowserRouter>
   );
