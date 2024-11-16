@@ -34,7 +34,11 @@ const useAuth = () => {
       const newTable = await getTableInfo(authToken);
       const table_title = newTable.title;
       setTitle(table_title);
-      setTableInfo(newTable as TableResponse);
+      if (newTable.lecture_list.length === 0) {
+        setTableInfo({ ...newTable, lecture_list: [] });
+        return;
+      }
+      setTableInfo(newTable);
     } catch (err) {
       const errorMessage =
         err instanceof Error

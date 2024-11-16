@@ -27,6 +27,7 @@ const MainPage = ({ tableList, table_title, token }: MainPageProps) => {
         totalCredit={totalCredit}
         title={title}
         onMenuClick={handleDrawerToggle}
+        tableId={tableList?._id as string}
       />
       <TimeTable setTotalCredit={setTotalCredit} tableList={tableList} />
       <TimeTableDrawer

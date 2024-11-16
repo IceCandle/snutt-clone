@@ -1,4 +1,5 @@
 import LoadingSpinner from './components/LoadingSpinner';
+import type { TableResponse } from './components/types';
 import { ThemeProvider } from './contexts/ThemeContext';
 import useAuth from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
@@ -28,7 +29,7 @@ const App = () => {
           <UserInfoPage
             nickname={nickname}
             onLogout={handleLogout}
-            tableList={tableList}
+            tableList={tableList as TableResponse}
             title={title}
             token={token}
             onNicknameChange={handleNicknameChange}
