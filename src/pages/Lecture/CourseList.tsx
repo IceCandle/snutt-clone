@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+
 import LoadingSpinner from '../../components/LoadingSpinner';
 import type { Lecture, TableResponse } from '../../components/types';
 
