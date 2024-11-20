@@ -23,7 +23,9 @@ export const Navbar = ({ selectedMenu }: NavbarProps) => {
       '/': 'timetable',
       '/mypage': 'mypage',
     };
-    return pathToMenu[location.pathname] === menuName ? 'opacity-100' : 'opacity-50';
+    return pathToMenu[location.pathname] === menuName
+      ? 'opacity-100'
+      : 'opacity-50';
   };
 
   return (
@@ -38,15 +40,21 @@ export const Navbar = ({ selectedMenu }: NavbarProps) => {
           <img src={mainIcon} alt="Main" className="w-6 h-6" />
           <span className="text-xs mt-1">시간표</span>
         </button>
-        <button className={`flex flex-col items-center ${getMenuOpacity('search')}`}>
+        <button
+          className={`flex flex-col items-center ${getMenuOpacity('search')}`}
+        >
           <img src={searchIcon} alt="Search" className="w-6 h-6" />
           <span className="text-xs mt-1">검색</span>
         </button>
-        <button className={`flex flex-col items-center ${getMenuOpacity('evaluation')}`}>
+        <button
+          className={`flex flex-col items-center ${getMenuOpacity('evaluation')}`}
+        >
           <img src={evIcon} alt="Events" className="w-6 h-6" />
           <span className="text-xs mt-1">강의평</span>
         </button>
-        <button className={`flex flex-col items-center ${getMenuOpacity('friends')}`}>
+        <button
+          className={`flex flex-col items-center ${getMenuOpacity('friends')}`}
+        >
           <img src={friendsIcon} alt="Friends" className="w-6 h-6" />
           <span className="text-xs mt-1">친구</span>
         </button>

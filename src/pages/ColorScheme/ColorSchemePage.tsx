@@ -5,14 +5,19 @@ interface ColorSchemePageProps {
   onToggleTheme: () => void;
 }
 
-export const ColorSchemePage = ({ isDarkMode, onToggleTheme }: ColorSchemePageProps) => {
+export const ColorSchemePage = ({
+  isDarkMode,
+  onToggleTheme,
+}: ColorSchemePageProps) => {
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col h-screen max-w-[375px] mx-auto bg-white dark:bg-gray-900">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
         <button
-          onClick={() => { navigate('/mypage'); }}
+          onClick={() => {
+            navigate('/mypage');
+          }}
           className="mr-4 text-gray-600 dark:text-gray-300"
         >
           ←
