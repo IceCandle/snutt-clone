@@ -9,6 +9,7 @@ import type { Lecture } from '../../components/types';
 interface LectureDetailProps {
   lecture?: Lecture;
   isEditing?: boolean;
+  onDelete?: () => Promise<void>;
 }
 
 const API_BASE_URL =
@@ -17,6 +18,7 @@ const API_BASE_URL =
 export const LectureDetail = ({
   lecture,
   isEditing = false,
+  onDelete,
 }: LectureDetailProps) => {
   const navigate = useNavigate();
   const { timetableId, lectureId } = useParams();
@@ -56,7 +58,9 @@ export const LectureDetail = ({
   const handleDelete = async () => {
     if (!window.confirm('정말로 이 강의를 삭제하시겠습니까?')) return;
     try {
-      await deleteMutation.mutateAsync();
+      if (onDelete != null) {
+        await onDelete();
+      }
     } catch (error) {
       alert(
         error instanceof Error ? error.message : '강의 삭제에 실패했습니다',

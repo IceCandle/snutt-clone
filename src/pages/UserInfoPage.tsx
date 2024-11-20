@@ -64,7 +64,7 @@ const UserInfoPage = ({
         />
         <Route
           path="/timetables/:timetableId/lectures"
-          element={<CourseList {...tableList} />}
+          element={<CourseList />}
         />
         <Route
           path="/timetables/:timetableId/lectures/:lectureId"
