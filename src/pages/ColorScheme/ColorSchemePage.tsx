@@ -22,7 +22,9 @@ export const ColorSchemePage = ({
         >
           ←
         </button>
-        <h1 className="text-lg font-semibold dark:text-white">라이트 모드</h1>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+          색상 모드
+        </h1>
       </div>
 
       <div className="p-4">

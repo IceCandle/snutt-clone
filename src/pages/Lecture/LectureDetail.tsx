@@ -73,18 +73,18 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
   );
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-900">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
         <div className="flex items-center">
           <button
             onClick={() => {
               navigate('/');
             }}
-            className="mr-4 text-gray-600"
+            className="mr-4 text-gray-600 dark:text-gray-300"
           >
             ←
           </button>
-          <h1 className="text-lg">강의 상세</h1>
+          <h1 className="text-lg text-gray-900 dark:text-white">강의 상세</h1>
         </div>
         <div className="flex gap-2">
           <button
@@ -92,7 +92,7 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
               setShowNotificationModal(true);
             }}
           >
-            <img src={alarm} alt="알림" className="w-6 h-6" />
+            <img src={alarm} alt="알림" className="w-6 h-6 dark:invert" />
           </button>
           <button
             onClick={() => {
@@ -102,7 +102,7 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
             <img
               src={bookmark}
               alt="북마크"
-              className={`w-6 h-6 ${isWatchlisted ? 'opacity-100' : 'opacity-50'}`}
+              className={`w-6 h-6 ${isWatchlisted ? 'opacity-100' : 'opacity-50'} dark:invert`}
             />
           </button>
         </div>
@@ -129,9 +129,11 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
         </div>
 
         <div className="px-4 mt-4">
-          <h3 className="font-medium mb-2">시간 및 장소</h3>
+          <h3 className="font-medium mb-2 text-gray-900 dark:text-white">
+            시간 및 장소
+          </h3>
           {lecture.class_time_json.map((time, index) => (
-            <div key={index} className="mb-2">
+            <div key={index} className="mb-2 text-gray-700 dark:text-gray-300">
               <div>
                 시간: {['월', '화', '수', '목', '금'][time.day]}요일{' '}
                 {time.start_time}-{time.end_time}
@@ -146,7 +148,7 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
             onClick={() => {
               alert('강의계획서 기능은 준비중입니다.');
             }}
-            className="w-full p-3 text-center border border-gray-300 rounded"
+            className="-full p-3 text-center border border-gray-300 dark:border-gray-600 rounded text-gray-900 dark:text-white dark:hover:bg-gray-800"
           >
             강의계획서
           </button>
@@ -154,7 +156,7 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
             onClick={() => {
               alert('강의평 기능은 준비중입니다.');
             }}
-            className="w-full p-3 text-center border border-gray-300 rounded"
+            className="-full p-3 text-center border border-gray-300 dark:border-gray-600 rounded text-gray-900 dark:text-white dark:hover:bg-gray-800"
           >
             강의평
           </button>
@@ -162,13 +164,13 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
             onClick={() => {
               setShowNotificationModal(true);
             }}
-            className="w-full p-3 text-center border border-gray-300 rounded"
+            className="-full p-3 text-center border border-gray-300 dark:border-gray-600 rounded text-gray-900 dark:text-white dark:hover:bg-gray-800"
           >
             빈자리 알림
           </button>
           <button
             onClick={() => void handleDelete()}
-            className="w-full p-3 text-center border border-gray-300 rounded text-red-500"
+            className="w-full p-3 text-center border border-gray-300 dark:border-gray-600 rounded text-red-500 dark:text-red-400"
             disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending ? '삭제중...' : '삭제'}
@@ -177,10 +179,12 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
       </div>
 
       {showNotificationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-4 w-full max-w-sm">
-            <h3 className="text-lg font-medium mb-4">빈자리 알림 설정</h3>
-            <p className="text-gray-600 mb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 w-full max-w-sm">
+            <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-white">
+              빈자리 알림 설정
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
               이 강의에 빈자리가 생기면 알림을 받으시겠습니까?
             </p>
             <div className="flex justify-end gap-2">
@@ -188,7 +192,7 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
                 onClick={() => {
                   setShowNotificationModal(false);
                 }}
-                className="px-4 py-2 text-gray-600"
+                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900"
               >
                 취소
               </button>
@@ -197,7 +201,7 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
                   alert('알림이 설정되었습니다.');
                   setShowNotificationModal(false);
                 }}
-                className="px-4 py-2 border border-gray-300 rounded"
+                className="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded transition-colors"
               >
                 설정
               </button>

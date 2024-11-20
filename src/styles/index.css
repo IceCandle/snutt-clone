@@ -1,3 +1,48 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-white;
+  }
+
+  /* Smooth transitions for theme switching */
+  .transition-theme {
+    @apply transition-colors duration-200;
+  }
+
+  /* Default input styles */
+  input,
+  select,
+  textarea {
+    @apply bg-white dark:bg-gray-800 
+      border-gray-300 dark:border-gray-600
+      text-gray-900 dark:text-white
+      placeholder-gray-400 dark:placeholder-gray-500;
+  }
+
+  /* Default button styles */
+  button {
+    @apply transition-colors duration-200;
+  }
+
+  /* Card and elevated surface styles */
+  .elevated {
+    @apply bg-white dark:bg-gray-800 shadow-lg;
+  }
+
+  /* Border styles */
+  .border-default {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+
+  /* Text styles */
+  .text-body {
+    @apply text-gray-600 dark:text-gray-300;
+  }
+
+  .text-muted {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+}

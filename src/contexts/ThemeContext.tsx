@@ -7,21 +7,34 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem('darkMode');
-    return saved != null ? (JSON.parse(saved) as boolean) : false;
+    if (saved != null) {
+      return JSON.parse(saved) as boolean;
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
+    const root = document.documentElement;
+
+    root.classList.add('transition-colors', 'duration-200');
+
     if (isDarkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
     }
+
+    const timeout = setTimeout(() => {
+      root.classList.remove('transition-colors', 'duration-200');
+    }, 200);
+
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [isDarkMode]);
 
   const toggleTheme = () => {
