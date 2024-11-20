@@ -60,21 +60,17 @@ export const LectureForm = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      <div className="flex justify-between p-4 border-b">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-900">
+      <div className="flex justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         <button
-          onClick={() => {
-            navigate(-1);
-          }}
-          className="text-lg"
+          onClick={() => { navigate(-1); }}
+          className="text-lg text-gray-600 dark:text-gray-300"
         >
           취소
         </button>
         <button
-          onClick={() => {
-            void handleSubmit();
-          }}
-          className="text-lg"
+          onClick={() => { void handleSubmit(); }}
+          className="text-lg text-gray-900 dark:text-white disabled:opacity-50"
           disabled={isLoading}
         >
           {isLoading ? '저장 중...' : '저장'}
@@ -83,46 +79,46 @@ export const LectureForm = ({
 
       <div className="p-4 space-y-4">
         <div className="space-y-2">
-          <label className="block text-gray-500">강의명</label>
+          <label className="block text-gray-500 dark:text-gray-400">강의명</label>
           <input
             type="text"
             value={form.course_title}
             onChange={(e) => {
               setForm((prev) => ({ ...prev, course_title: e.target.value }));
             }}
-            className="w-full p-2 border-b focus:outline-none"
+            className="w-full p-2 border-b border-gray-200 dark:border-gray-700 bg-transparent focus:outline-none text-gray-900 dark:text-white"
             placeholder="새로운 강의"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="block text-gray-500">교수</label>
+          <label className="block text-gray-500 dark:text-gray-400">교수</label>
           <input
             type="text"
             value={form.instructor}
             onChange={(e) => {
               setForm((prev) => ({ ...prev, instructor: e.target.value }));
             }}
-            className="w-full p-2 border-b focus:outline-none"
+            className="w-full p-2 border-b border-gray-200 dark:border-gray-700 bg-transparent focus:outline-none text-gray-900 dark:text-white"
             placeholder="(없음)"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="block text-gray-500">학점</label>
+          <label className="block text-gray-500 dark:text-gray-400">학점</label>
           <input
             type="number"
             value={form.credit}
             onChange={(e) => {
               setForm((prev) => ({ ...prev, credit: Number(e.target.value) }));
             }}
-            className="w-full p-2 border-b focus:outline-none"
+            className="w-full p-2 border-b border-gray-200 dark:border-gray-700 bg-transparent focus:outline-none text-gray-900 dark:text-white"
             placeholder="0"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="block text-gray-500">색</label>
+          <label className="block text-gray-500 dark:text-gray-400">색</label>
           <div className="flex items-center space-x-2 p-2 border-b">
             <div className="w-6 h-6 bg-red-500 rounded" />
             <span className="text-gray-400">▶</span>
@@ -130,11 +126,11 @@ export const LectureForm = ({
         </div>
 
         <div className="space-y-2">
-          <label className="block text-gray-500">시간 및 장소</label>
+          <label className="block text-gray-500 dark:text-gray-400">시간 및 장소</label>
           {form.times.map((time, index) => (
             <div
               key={index}
-              className="flex items-center space-x-2 border-b p-2"
+              className="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-700 p-2"
             >
               <select
                 value={time.day}
@@ -145,10 +141,10 @@ export const LectureForm = ({
                   }
                   setForm((prev) => ({ ...prev, times: newTimes }));
                 }}
-                className="border-none focus:outline-none"
+                className="border-none focus:outline-none bg-transparent text-gray-900 dark:text-white"
               >
                 {['월', '화', '수', '목', '금'].map((day, i) => (
-                  <option key={i} value={i}>
+                  <option key={i} value={i} className="bg-white dark:bg-gray-800">
                     {day}
                   </option>
                 ))}
@@ -163,7 +159,7 @@ export const LectureForm = ({
                   }
                   setForm((prev) => ({ ...prev, times: newTimes }));
                 }}
-                className="border-none focus:outline-none"
+                className="border-none focus:outline-none bg-transparent text-gray-900 dark:text-white"
               />
               ~
               <input
@@ -176,7 +172,7 @@ export const LectureForm = ({
                   }
                   setForm((prev) => ({ ...prev, times: newTimes }));
                 }}
-                className="border-none focus:outline-none"
+                className="border-none focus:outline-none bg-transparent text-gray-900 dark:text-white"
               />
               <input
                 type="text"
@@ -189,7 +185,7 @@ export const LectureForm = ({
                   setForm((prev) => ({ ...prev, times: newTimes }));
                 }}
                 placeholder="(없음)"
-                className="flex-1 border-none focus:outline-none"
+                className="flex-1 border-none focus:outline-none bg-transparent text-gray-900 dark:text-white"
               />
               <button
                 onClick={() => {
@@ -203,21 +199,21 @@ export const LectureForm = ({
           ))}
           <button
             onClick={handleAddTime}
-            className="w-full p-2 text-center border-b"
+            className="w-full p-2 text-center border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300"
           >
             + 시간 추가
           </button>
         </div>
 
         <div className="space-y-2">
-          <label className="block text-gray-500">비고</label>
+          <label className="block text-gray-500 dark:text-gray-400">비고</label>
           <input
             type="text"
             value={form.remark}
             onChange={(e) => {
               setForm((prev) => ({ ...prev, remark: e.target.value }));
             }}
-            className="w-full p-2 border-b focus:outline-none"
+            className="w-full p-2 border-b focus:outline-none bg-transparent text-gray-900 dark:text-white"
             placeholder="(없음)"
           />
         </div>

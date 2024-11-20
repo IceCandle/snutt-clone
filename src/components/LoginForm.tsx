@@ -25,7 +25,10 @@ const LoginForm = ({ onLogin, error }: LoginFormProps) => {
         onChange={(e) => {
           setUsername(e.target.value);
         }}
-        className="w-full mb-4 p-2 border rounded"
+        className="w-full mb-4 p-2 border rounded bg-white dark:bg-gray-800 
+          border-gray-300 dark:border-gray-600
+          text-gray-900 dark:text-white
+          placeholder-gray-400 dark:placeholder-gray-500"
       />
       <input
         type="password"
@@ -34,17 +37,21 @@ const LoginForm = ({ onLogin, error }: LoginFormProps) => {
         onChange={(e) => {
           setPassword(e.target.value);
         }}
-        className="w-full mb-4 p-2 border rounded"
+        className="w-full mb-4 p-2 border rounded bg-white dark:bg-gray-800 
+          border-gray-300 dark:border-gray-600
+          text-gray-900 dark:text-white
+          placeholder-gray-400 dark:placeholder-gray-500"
       />
       <button
         type="submit"
-        className="w-full p-3 bg-[#f58d3d] rounded-md justify-center items-center gap-[5px] inline-flex"
+        className="w-full p-3 bg-[#f58d3d] hover:bg-[#e67d2d] text-white rounded-md 
+          justify-center items-center gap-[5px] inline-flex transition-colors"
       >
-        <div className="text-white text-sm font-bold font-['Pretendard']">
+        <div className="text-sm font-bold font-['Pretendard']">
           로그인
         </div>
       </button>
-      {error != null && <p className="text-red-500 mt-2">{error}</p>}
+      {error != null && <p className="text-red-500 dark:text-red-400 mt-2">{error}</p>}
     </form>
   );
 };

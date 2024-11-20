@@ -65,11 +65,11 @@ export const CourseList = () => {
             >
               ←
             </button>
-            <h1 className="text-lg font-semibold dark:text-white">강의 목록</h1>
+            <h1 className="text-lg font-semibold text-gray-900 dark:text-white">강의 목록</h1>
           </div>
           <button
             onClick={handleAddNew}
-            className="text-gray-600 dark:text-gray-400"
+            className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
           >
             + 새 강의
           </button>
@@ -84,12 +84,10 @@ export const CourseList = () => {
             tableInfo.lecture_list.map((lecture) => (
               <div
                 key={lecture._id}
-                onClick={() => {
-                  handleLectureClick(lecture._id);
-                }}
+                onClick={() => { handleLectureClick(lecture._id); }}
                 className="p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
               >
-                <h3 className="font-medium dark:text-white">
+                <h3 className="font-medium text-gray-900 dark:text-white">
                   {lecture.course_title}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">

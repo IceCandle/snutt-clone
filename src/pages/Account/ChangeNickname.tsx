@@ -50,40 +50,31 @@ const ChangeNickname = ({ token, onNicknameChange }: ChangeNicknameProps) => {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-[375px] mx-auto">
-      <div className="flex items-center p-4 border-b">
+    <div className="flex flex-col h-screen max-w-[375px] mx-auto bg-white dark:bg-gray-900">
+      <div className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700">
         <button
-          onClick={() => {
-            navigate('/mypage/account');
-          }}
-          className="mr-4"
+          onClick={() => { navigate('/mypage/account'); }}
+          className="mr-4 text-gray-600 dark:text-gray-300"
         >
           ←
         </button>
-        <h1 className="text-lg font-semibold">닉네임 변경</h1>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-white">닉네임 변경</h1>
       </div>
 
-      <form
-        onSubmit={(e) => {
-          void handleSubmit(e);
-        }}
-        className="p-4"
-      >
+      <form onSubmit={(e) => { void handleSubmit(e); }} className="p-4">
         <input
           type="text"
           value={newNickname}
-          onChange={(e) => {
-            setNewNickname(e.target.value);
-          }}
+          onChange={(e) => { setNewNickname(e.target.value); }}
           placeholder="새로운 닉네임"
-          className="w-full p-2 border rounded mb-4"
+          className="w-full p-2 border rounded mb-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500"
           disabled={isSubmitting}
         />
-        {error != null && <p className="text-red-500 mb-4">{error}</p>}
+        {error != null && <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>}
         <button
           type="submit"
           className={`w-full p-3 bg-orange-500 text-white rounded ${
-            isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-600'
           }`}
           disabled={isSubmitting}
         >
