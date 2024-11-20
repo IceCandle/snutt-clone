@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 import LoginForm from '../components/LoginForm';
@@ -10,10 +11,24 @@ interface LoginPageProps {
 
 const LoginPage = ({ onLogin, error }: LoginPageProps) => {
   const [isLoginView, setIsLoginView] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(error);
+
+  const handleLogin = async (username: string, password: string) => {
+    try {
+      setLoginError(null);
+      await onLogin(username, password);
+    } catch (err) {
+      setLoginError(err instanceof Error ? err.message : 'Login failed');
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-white">
-      <div className="flex flex-col items-center mt-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-4">
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="flex flex-col items-center mb-8"
+      >
         <div className="relative w-[60px] h-[60px]">
           <div className="absolute w-[20.15px] h-[20.86px] left-[16.24px] top-[15.52px] bg-[#ef975d]"></div>
           <div className="absolute w-[20.15px] h-[20.86px] left-[16.24px] top-[39.13px] bg-[#ef975d]"></div>
@@ -27,18 +42,36 @@ const LoginPage = ({ onLogin, error }: LoginPageProps) => {
         <div className="text-center text-black text-[21.35px] font-['SF Pro'] mt-4">
           TimeTable
         </div>
-      </div>
-      <div className="w-full px-8 mt-8 max-w-sm">
-        {/* True인 경우(false의 로그인 버튼을 누른 경우), login form page로 넘김 => ID PW 입력창이 뜸 */}
+      </motion.div>
+
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="w-full max-w-sm px-8"
+      >
         {isLoginView ? (
-          <LoginForm onLogin={onLogin} error={error} />
-        ) : (
-          <>
-            {/* flase인 경우(default), 로그인 버튼 & 회원가입 버튼 존재*/}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <LoginForm onLogin={handleLogin} error={loginError} />
             <button
-              onClick={() => {
-                setIsLoginView(true);
-              }}
+              onClick={() => { setIsLoginView(false); }}
+              className="w-full mt-4 text-gray-500 text-sm"
+            >
+              뒤로 가기
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <button
+              onClick={() => { setIsLoginView(true); }}
               className="w-full p-4 bg-[#f58d3d] rounded-md flex justify-center items-center"
             >
               <span className="text-white text-sm font-bold font-['Pretendard']">
@@ -48,10 +81,17 @@ const LoginPage = ({ onLogin, error }: LoginPageProps) => {
             <div className="mt-4 text-center">
               <p className="text-sm font-semibold text-[#505050]">회원가입</p>
             </div>
-          </>
+          </motion.div>
         )}
-      </div>
-      <SocialLoginButtons />
+      </motion.div>
+
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        <SocialLoginButtons />
+      </motion.div>
     </div>
   );
 };
