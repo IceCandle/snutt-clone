@@ -22,26 +22,38 @@ const SocialLoginButtons = () => {
           src={kakaoIcon}
           alt="Kakao"
           className="w-11 h-11 rounded-[21.6px] cursor-pointer hover:opacity-90 transition-opacity"
-          onClick={() => { handleSocialLogin('Kakao'); }}
+          onClick={() => {
+            handleSocialLogin('Kakao');
+          }}
         />
         <div
           className="w-11 h-11 p-2.5 bg-white dark:bg-gray-800 rounded-full border border-[#c4c4c4] dark:border-gray-600 
             flex justify-center items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-          onClick={() => { handleSocialLogin('Google'); }}
+          onClick={() => {
+            handleSocialLogin('Google');
+          }}
         >
-          <img src={googleIcon} alt="Google" className="w-[24.8px] h-[24.8px] rounded-full" />
+          <img
+            src={googleIcon}
+            alt="Google"
+            className="w-[24.8px] h-[24.8px] rounded-full"
+          />
         </div>
         <img
           src={facebookIcon}
           alt="Facebook"
           className="w-11 h-11 cursor-pointer hover:opacity-90 transition-opacity"
-          onClick={() => { handleSocialLogin('Facebook'); }}
+          onClick={() => {
+            handleSocialLogin('Facebook');
+          }}
         />
         <img
           src={appleIcon}
           alt="Apple"
           className="w-11 h-11 rounded-full cursor-pointer hover:opacity-90 transition-opacity dark:invert"
-          onClick={() => { handleSocialLogin('Apple'); }}
+          onClick={() => {
+            handleSocialLogin('Apple');
+          }}
         />
       </div>
     </div>

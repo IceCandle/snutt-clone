@@ -22,7 +22,9 @@ export const Navbar = ({ selectedMenu }: NavbarProps) => {
       '/': 'timetable',
       '/mypage': 'mypage',
     };
-    return pathToMenu[location.pathname] === menuName ? 'opacity-100' : 'opacity-50';
+    return pathToMenu[location.pathname] === menuName
+      ? 'opacity-100'
+      : 'opacity-50';
   };
 
   return (
@@ -30,29 +32,53 @@ export const Navbar = ({ selectedMenu }: NavbarProps) => {
       <div className="max-w-[375px] mx-auto flex justify-between items-center">
         <button
           className={`flex flex-col items-center ${getMenuOpacity('timetable')}`}
-          onClick={() => { navigate('/'); }}
+          onClick={() => {
+            navigate('/');
+          }}
         >
           <img src={mainIcon} alt="Main" className="w-6 h-6 dark:invert" />
-          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">시간표</span>
+          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">
+            시간표
+          </span>
         </button>
-        <button className={`flex flex-col items-center ${getMenuOpacity('search')}`}>
+        <button
+          className={`flex flex-col items-center ${getMenuOpacity('search')}`}
+        >
           <img src={searchIcon} alt="Search" className="w-6 h-6 dark:invert" />
-          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">검색</span>
+          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">
+            검색
+          </span>
         </button>
-        <button className={`flex flex-col items-center ${getMenuOpacity('evaluation')}`}>
+        <button
+          className={`flex flex-col items-center ${getMenuOpacity('evaluation')}`}
+        >
           <img src={evIcon} alt="Events" className="w-6 h-6 dark:invert" />
-          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">강의평</span>
+          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">
+            강의평
+          </span>
         </button>
-        <button className={`flex flex-col items-center ${getMenuOpacity('friends')}`}>
-          <img src={friendsIcon} alt="Friends" className="w-6 h-6 dark:invert" />
-          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">친구</span>
+        <button
+          className={`flex flex-col items-center ${getMenuOpacity('friends')}`}
+        >
+          <img
+            src={friendsIcon}
+            alt="Friends"
+            className="w-6 h-6 dark:invert"
+          />
+          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">
+            친구
+          </span>
         </button>
         <button
           className={`flex flex-col items-center ${getMenuOpacity('mypage')}`}
-          onClick={() => { navigate('/mypage'); }}
+          onClick={() => {
+            navigate('/mypage');
+          }}
         >
           <img src={mypageIcon} alt="My Page" className="w-6 h-6 dark:invert" />
-          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">마이페이지</span>
+          <span className="text-xs mt-1 text-gray-900 dark:text-gray-100">
+            마이페이지
+          </span>
         </button>
       </div>
     </div>

@@ -18,7 +18,7 @@ export const Header = ({
   tableId,
 }: HeaderProps) => {
   const { toLectureList } = useNavigation();
-  
+
   return (
     <div className="flex w-full justify-between pt-2 pb-1.5 pl-4 p-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
       <div className="flex gap-2 items-center">
@@ -38,10 +38,16 @@ export const Header = ({
       </div>
       <div className="flex gap-2 items-center ml-auto">
         <button
-          onClick={() => { toLectureList(tableId); }}
+          onClick={() => {
+            toLectureList(tableId);
+          }}
           className="text-xs text-primary"
         >
-          <img src={lecturelist} alt="강의 목록" className="w-6 h-6 dark:invert" />
+          <img
+            src={lecturelist}
+            alt="강의 목록"
+            className="w-6 h-6 dark:invert"
+          />
         </button>
         <button className="text-xs text-primary">
           <img src={share} alt="공유" className="w-6 h-6 dark:invert" />

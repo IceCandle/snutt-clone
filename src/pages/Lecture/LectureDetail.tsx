@@ -77,7 +77,9 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
         <div className="flex items-center">
           <button
-            onClick={() => { navigate('/'); }}
+            onClick={() => {
+              navigate('/');
+            }}
             className="mr-4 text-gray-600 dark:text-gray-300"
           >
             ←
@@ -85,10 +87,18 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
           <h1 className="text-lg text-gray-900 dark:text-white">강의 상세</h1>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => { setShowNotificationModal(true); }}>
+          <button
+            onClick={() => {
+              setShowNotificationModal(true);
+            }}
+          >
             <img src={alarm} alt="알림" className="w-6 h-6 dark:invert" />
           </button>
-          <button onClick={() => { setIsWatchlisted(!isWatchlisted); }}>
+          <button
+            onClick={() => {
+              setIsWatchlisted(!isWatchlisted);
+            }}
+          >
             <img
               src={bookmark}
               alt="북마크"
@@ -119,7 +129,9 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
         </div>
 
         <div className="px-4 mt-4">
-          <h3 className="font-medium mb-2 text-gray-900 dark:text-white">시간 및 장소</h3>
+          <h3 className="font-medium mb-2 text-gray-900 dark:text-white">
+            시간 및 장소
+          </h3>
           {lecture.class_time_json.map((time, index) => (
             <div key={index} className="mb-2 text-gray-700 dark:text-gray-300">
               <div>
@@ -177,7 +189,9 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
             </p>
             <div className="flex justify-end gap-2">
               <button
-                onClick={() => { setShowNotificationModal(false); }}
+                onClick={() => {
+                  setShowNotificationModal(false);
+                }}
                 className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900"
               >
                 취소

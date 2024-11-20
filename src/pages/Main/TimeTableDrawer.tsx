@@ -168,74 +168,89 @@ export const TimeTableDrawer = ({
             className="fixed left-0 top-0 bottom-0 w-[320px] bg-white dark:bg-gray-900 shadow-lg overflow-y-auto"
           >
             <div className="p-4 flex justify-between items-center border-b dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">내 시간표</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                내 시간표
+              </h2>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => { setShowAddSheet(true); }}
+                  onClick={() => {
+                    setShowAddSheet(true);
+                  }}
                   className="text-2xl text-blue-500 dark:text-blue-400"
                 >
                   +
                 </button>
-                <button onClick={onClose} className="text-gray-500 dark:text-gray-400">
+                <button
+                  onClick={onClose}
+                  className="text-gray-500 dark:text-gray-400"
+                >
                   ×
                 </button>
               </div>
             </div>
 
             <div className="p-4">
-              {Object.entries(groupedTimetables).map(([semester, semesterTimetables]) => (
-                <div key={semester} className="mb-4">
-                  <button
-                    onClick={() => { toggleSemester(semester); }}
-                    className="w-full flex justify-between items-center p-2 text-left"
-                  >
-                    <span className="font-medium text-gray-900 dark:text-white">{semester}</span>
-                    <img
-                      src={rightArrow}
-                      alt="expand"
-                      className={`w-4 h-4 transform transition-transform dark:invert
+              {Object.entries(groupedTimetables).map(
+                ([semester, semesterTimetables]) => (
+                  <div key={semester} className="mb-4">
+                    <button
+                      onClick={() => {
+                        toggleSemester(semester);
+                      }}
+                      className="w-full flex justify-between items-center p-2 text-left"
+                    >
+                      <span className="font-medium text-gray-900 dark:text-white">
+                        {semester}
+                      </span>
+                      <img
+                        src={rightArrow}
+                        alt="expand"
+                        className={`w-4 h-4 transform transition-transform dark:invert
                         ${expandedSemesters.includes(semester) ? 'rotate-90' : 'rotate-0'}`}
-                    />
-                  </button>
-                  
-                  <AnimatePresence>
-                    {expandedSemesters.includes(semester) && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        {semesterTimetables.map((timetable) => (
-                          <div
-                            key={timetable._id}
-                            className="flex justify-between items-center p-2 ml-4 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-                          >
+                      />
+                    </button>
+
+                    <AnimatePresence>
+                      {expandedSemesters.includes(semester) && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          {semesterTimetables.map((timetable) => (
                             <div
-                              onClick={() => { void onTimeTableSelect(timetable._id); }}
-                              className="flex-1 cursor-pointer"
+                              key={timetable._id}
+                              className="flex justify-between items-center p-2 ml-4 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                             >
-                              <div className="font-medium text-gray-900 dark:text-gray-100">
-                                {timetable.title}
+                              <div
+                                onClick={() => {
+                                  void onTimeTableSelect(timetable._id);
+                                }}
+                                className="flex-1 cursor-pointer"
+                              >
+                                <div className="font-medium text-gray-900 dark:text-gray-100">
+                                  {timetable.title}
+                                </div>
                               </div>
+                              <button
+                                onClick={() => {
+                                  setTargetTimetable(timetable);
+                                  setShowRenameSheet(true);
+                                }}
+                                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 px-2"
+                              >
+                                ⋮
+                              </button>
                             </div>
-                            <button
-                              onClick={() => {
-                                setTargetTimetable(timetable);
-                                setShowRenameSheet(true);
-                              }}
-                              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 px-2"
-                            >
-                              ⋮
-                            </button>
-                          </div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))}
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ),
+              )}
             </div>
           </motion.div>
 

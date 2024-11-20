@@ -58,7 +58,9 @@ const LoginPage = ({ onLogin, error }: LoginPageProps) => {
           >
             <LoginForm onLogin={handleLogin} error={loginError} />
             <button
-              onClick={() => { setIsLoginView(false); }}
+              onClick={() => {
+                setIsLoginView(false);
+              }}
               className="w-full mt-4 text-gray-500 dark:text-gray-400 text-sm hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               뒤로 가기
@@ -71,7 +73,9 @@ const LoginPage = ({ onLogin, error }: LoginPageProps) => {
             exit={{ opacity: 0 }}
           >
             <button
-              onClick={() => { setIsLoginView(true); }}
+              onClick={() => {
+                setIsLoginView(true);
+              }}
               className="w-full p-4 bg-[#f58d3d] hover:bg-[#e67d2d] rounded-md flex justify-center items-center transition-colors"
             >
               <span className="text-white text-sm font-bold font-['Pretendard']">
@@ -79,7 +83,9 @@ const LoginPage = ({ onLogin, error }: LoginPageProps) => {
               </span>
             </button>
             <div className="mt-4 text-center">
-              <p className="text-sm font-semibold text-[#505050] dark:text-gray-400">회원가입</p>
+              <p className="text-sm font-semibold text-[#505050] dark:text-gray-400">
+                회원가입
+              </p>
             </div>
           </motion.div>
         )}

@@ -47,11 +47,11 @@ const LoginForm = ({ onLogin, error }: LoginFormProps) => {
         className="w-full p-3 bg-[#f58d3d] hover:bg-[#e67d2d] text-white rounded-md 
           justify-center items-center gap-[5px] inline-flex transition-colors"
       >
-        <div className="text-sm font-bold font-['Pretendard']">
-          로그인
-        </div>
+        <div className="text-sm font-bold font-['Pretendard']">로그인</div>
       </button>
-      {error != null && <p className="text-red-500 dark:text-red-400 mt-2">{error}</p>}
+      {error != null && (
+        <p className="text-red-500 dark:text-red-400 mt-2">{error}</p>
+      )}
     </form>
   );
 };

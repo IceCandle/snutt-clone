@@ -63,13 +63,17 @@ export const LectureForm = ({
     <div className="flex flex-col h-full bg-white dark:bg-gray-900">
       <div className="flex justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         <button
-          onClick={() => { navigate(-1); }}
+          onClick={() => {
+            navigate(-1);
+          }}
           className="text-lg text-gray-600 dark:text-gray-300"
         >
           취소
         </button>
         <button
-          onClick={() => { void handleSubmit(); }}
+          onClick={() => {
+            void handleSubmit();
+          }}
           className="text-lg text-gray-900 dark:text-white disabled:opacity-50"
           disabled={isLoading}
         >
@@ -79,7 +83,9 @@ export const LectureForm = ({
 
       <div className="p-4 space-y-4">
         <div className="space-y-2">
-          <label className="block text-gray-500 dark:text-gray-400">강의명</label>
+          <label className="block text-gray-500 dark:text-gray-400">
+            강의명
+          </label>
           <input
             type="text"
             value={form.course_title}
@@ -126,7 +132,9 @@ export const LectureForm = ({
         </div>
 
         <div className="space-y-2">
-          <label className="block text-gray-500 dark:text-gray-400">시간 및 장소</label>
+          <label className="block text-gray-500 dark:text-gray-400">
+            시간 및 장소
+          </label>
           {form.times.map((time, index) => (
             <div
               key={index}
@@ -144,7 +152,11 @@ export const LectureForm = ({
                 className="border-none focus:outline-none bg-transparent text-gray-900 dark:text-white"
               >
                 {['월', '화', '수', '목', '금'].map((day, i) => (
-                  <option key={i} value={i} className="bg-white dark:bg-gray-800">
+                  <option
+                    key={i}
+                    value={i}
+                    className="bg-white dark:bg-gray-800"
+                  >
                     {day}
                   </option>
                 ))}

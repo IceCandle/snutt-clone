@@ -13,7 +13,9 @@
   }
 
   /* Default input styles */
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     @apply bg-white dark:bg-gray-800 
       border-gray-300 dark:border-gray-600
       text-gray-900 dark:text-white
