@@ -60,7 +60,7 @@ const MainPage = ({ tableList, table_title, token }: MainPageProps) => {
   };
 
   return (
-    <div className="flex relative overflow-hidden flex-col h-screen max-w-[375px] mx-auto">
+    <div className="flex relative overflow-hidden flex-col h-screen mx-auto">
       <Header
         totalCredit={totalCredit}
         title={title}
