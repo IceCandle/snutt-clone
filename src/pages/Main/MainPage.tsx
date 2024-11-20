@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import { Navbar } from '../../components/Navbar';
@@ -5,6 +6,9 @@ import type { TableResponse } from '../../components/types';
 import { Header } from './Header';
 import { TimeTable } from './TimeTable';
 import { TimeTableDrawer } from './TimeTableDrawer';
+
+const API_BASE_URL =
+  'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
 
 interface MainPageProps {
   tableList: TableResponse | undefined;
@@ -16,9 +20,43 @@ const MainPage = ({ tableList, table_title, token }: MainPageProps) => {
   const [totalCredit, setTotalCredit] = useState(0);
   const [title] = useState<string | null>(table_title);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  const switchTimetableMutation = useMutation({
+    mutationFn: async (selectedTableId: string) => {
+      if (token == null) throw new Error('No token available');
+
+      const response = await fetch(
+        `${API_BASE_URL}/tables/${selectedTableId}`,
+        {
+          headers: {
+            'x-access-token': token,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to switch timetable');
+      }
+
+      return response.json() as Promise<TableResponse>;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['tableInfo'] });
+      setIsDrawerOpen(false);
+    },
+  });
+
+  const handleTimeTableSelect = async (timetableId: string) => {
+    try {
+      await switchTimetableMutation.mutateAsync(timetableId);
+    } catch {
+      alert('Failed to switch timetable');
+    }
   };
 
   return (
@@ -36,9 +74,7 @@ const MainPage = ({ tableList, table_title, token }: MainPageProps) => {
           setIsDrawerOpen(false);
         }}
         token={token ?? ''}
-        onTimeTableSelect={function (): Promise<void> {
-          throw new Error('Function not implemented.');
-        }}
+        onTimeTableSelect={handleTimeTableSelect}
       />
       <Navbar selectedMenu="timetable" />
     </div>

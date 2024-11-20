@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
 
 interface Timetable {
   _id: string;
@@ -8,12 +10,6 @@ interface Timetable {
   isPrimary: boolean;
   updated_at: string;
   total_credit: number;
-}
-
-interface Semester {
-  year: number;
-  semester: string;
-  updated_at: string;
 }
 
 interface TimeTableDrawerProps {
@@ -32,70 +28,53 @@ export const TimeTableDrawer = ({
   token,
   onTimeTableSelect,
 }: TimeTableDrawerProps) => {
-  const [timetables, setTimetables] = useState<Timetable[]>([]);
-  const [semesters, setSemesters] = useState<Semester[]>([]);
-  const [selectedTimetable, setSelectedTimetable] = useState<string | null>(
-    null,
-  );
   const [showAddSheet, setShowAddSheet] = useState(false);
   const [showRenameSheet, setShowRenameSheet] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
-  const [selectedSemester, setSelectedSemester] = useState<string>('');
+  const [selectedSemester, setSelectedSemester] = useState('');
   const [targetTimetable, setTargetTimetable] = useState<Timetable | null>(
     null,
   );
 
-  const fetchTimetables = useCallback(async () => {
-    try {
+  const queryClient = useQueryClient();
+
+  const { data: timetables = [] } = useQuery({
+    queryKey: ['timetables', token],
+    queryFn: async () => {
       const response = await fetch(`${API_BASE_URL}/tables`, {
         headers: {
           'x-access-token': token,
         },
       });
       if (!response.ok) throw new Error('Failed to fetch timetables');
-      const data = (await response.json()) as Timetable[];
-      setTimetables(data);
-      if (data.length > 0 && selectedTimetable == null) {
-        if (data[0] != null) {
-          setSelectedTimetable(data[0]._id);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching timetables:', error);
-    }
-  }, [token, selectedTimetable]);
+      return response.json() as Promise<Timetable[]>;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-  const fetchSemesters = useCallback(async () => {
-    try {
+  const { data: semesters = [] } = useQuery<Semester[]>({
+    queryKey: ['semesters', token],
+    queryFn: async () => {
       const response = await fetch(`${API_BASE_URL}/course_books`, {
         headers: {
           'x-access-token': token,
         },
       });
       if (!response.ok) throw new Error('Failed to fetch semesters');
-      const data = (await response.json()) as Semester[];
-      setSemesters(data);
-      if (data.length > 0) {
-        if (data[0] != null) {
-          setSelectedSemester(`${data[0].year}-${data[0].semester}`);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching semesters:', error);
-    }
-  }, [token]);
+      return response.json() as Promise<Semester[]>;
+    },
+  });
 
-  useEffect(() => {
-    if (isOpen) {
-      void fetchTimetables();
-      void fetchSemesters();
-    }
-  }, [isOpen, fetchTimetables, fetchSemesters]);
+  interface Semester {
+    year: number;
+    semester: number;
+  }
 
-  const handleAddTimetable = async () => {
-    try {
+  const addTimetableMutation = useMutation({
+    mutationFn: async () => {
       const [year, semester] = selectedSemester.split('-');
+      if (year == null) throw new Error('Year is undefined');
       const response = await fetch(`${API_BASE_URL}/tables`, {
         method: 'POST',
         headers: {
@@ -103,104 +82,114 @@ export const TimeTableDrawer = ({
           'x-access-token': token,
         },
         body: JSON.stringify({
-          year: parseInt(year ?? '0'),
+          year: parseInt(year),
           semester,
           title: newTitle,
         }),
       });
       if (!response.ok) throw new Error('Failed to create timetable');
-      await fetchTimetables();
+      return response.json() as Promise<Timetable>;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['timetables'] });
       setShowAddSheet(false);
       setNewTitle('');
-    } catch (error) {
-      console.error('Error creating timetable:', error);
-    }
-  };
+    },
+  });
 
-  const handleSelectTimetable = async (timetableId: string) => {
-    try {
-      await onTimeTableSelect(timetableId);
-      setSelectedTimetable(timetableId);
-      onClose();
-    } catch (error) {
-      console.error('Error selecting timetable:', error);
-    }
-  };
-
-  const handleDeleteTimetable = async () => {
-    if (targetTimetable == null) return;
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/tables/${targetTimetable._id}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'x-access-token': token,
-          },
+  const deleteTimetableMutation = useMutation({
+    mutationFn: async (timetableId: string) => {
+      const response = await fetch(`${API_BASE_URL}/tables/${timetableId}`, {
+        method: 'DELETE',
+        headers: {
+          'x-access-token': token,
         },
-      );
+      });
       if (!response.ok) throw new Error('Failed to delete timetable');
-      await fetchTimetables();
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['timetables'] });
       setShowDeleteConfirm(false);
       setTargetTimetable(null);
-    } catch (error) {
-      console.error('Error deleting timetable:', error);
-    }
-  };
-
-  if (!isOpen) return null;
+    },
+  });
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center">
-      <div className="absolute inset-0 max-w-[375px] mx-auto">
-        <div className="absolute left-0 top-0 bottom-0 w-[320px] bg-white shadow-lg">
-          <div className="p-4 flex justify-between items-center border-b">
-            <h2 className="text-lg font-semibold">시간표 목록</h2>
-            <button
-              onClick={() => {
-                setShowAddSheet(true);
-              }}
-              className="text-2xl"
-            >
-              +
-            </button>
-            <button onClick={onClose} className="text-gray-500">
-              &times;
-            </button>
-          </div>
-
-          <div className="p-4">
-            {timetables.map((timetable) => (
-              <div
-                key={timetable._id}
-                className="flex justify-between items-center p-2 hover:bg-gray-100 rounded"
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ type: 'spring', damping: 20 }}
+            className="fixed left-0 top-0 bottom-0 w-[320px] bg-white shadow-lg overflow-y-auto"
+          >
+            <div className="p-4 flex justify-between items-center border-b">
+              <h2 className="text-lg font-semibold">시간표 목록</h2>
+              <button
+                onClick={() => {
+                  setShowAddSheet(true);
+                }}
+                className="text-2xl text-blue-500"
               >
-                <div
-                  onClick={() => {
-                    void handleSelectTimetable(timetable._id);
-                  }}
-                >
-                  <div className="font-medium">{timetable.title}</div>
-                  <div className="text-sm text-gray-500">
-                    {timetable.year}년 {timetable.semester}학기
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setTargetTimetable(timetable);
-                    setShowRenameSheet(true);
-                  }}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ⋮
-                </button>
-              </div>
-            ))}
-          </div>
+                +
+              </button>
+              <button onClick={onClose} className="text-gray-500">
+                ×
+              </button>
+            </div>
 
-          {showAddSheet && (
-            <div className="fixed inset-x-0 bottom-0 max-w-[375px] mx-auto bg-white rounded-t-lg shadow-lg">
-              <div className="p-4">
+            <div className="p-4">
+              {timetables.map((timetable) => (
+                <div
+                  key={timetable._id}
+                  className="flex justify-between items-center p-2 hover:bg-gray-100 rounded"
+                >
+                  <div
+                    onClick={() => {
+                      onTimeTableSelect(timetable._id).catch(
+                        (error: unknown) => {
+                          console.error(error);
+                        },
+                      );
+                    }}
+                    className="flex-1 cursor-pointer"
+                  >
+                    <div className="font-medium">{timetable.title}</div>
+                    <div className="text-sm text-gray-500">
+                      {timetable.year}년 {timetable.semester}학기
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setTargetTimetable(timetable);
+                      setShowRenameSheet(true);
+                    }}
+                    className="text-gray-500 hover:text-gray-700 px-2"
+                  >
+                    ⋮
+                  </button>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <AnimatePresence>
+            {showAddSheet && (
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                className="fixed inset-x-0 bottom-0 bg-white rounded-t-lg shadow-lg p-4 mx-auto max-w-[375px]"
+              >
                 <h3 className="text-lg font-semibold mb-4">새 시간표 추가</h3>
                 <input
                   type="text"
@@ -238,71 +227,91 @@ export const TimeTableDrawer = ({
                   </button>
                   <button
                     onClick={() => {
-                      void handleAddTimetable();
+                      addTimetableMutation.mutate();
                     }}
-                    className="px-4 py-2 bg-orange-500 text-white rounded"
+                    className="px-4 py-2 bg-blue-500 text-white rounded"
                   >
                     추가
                   </button>
                 </div>
-              </div>
-            </div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          {showRenameSheet && (
-            <div className="fixed inset-x-0 bottom-0 max-w-[375px] mx-auto bg-white rounded-t-lg shadow-lg">
-              <div className="p-4">
-                <button
-                  onClick={() => {
-                    setShowRenameSheet(false);
-                    setShowDeleteConfirm(true);
-                  }}
-                  className="w-full p-3 text-left text-red-500 border-b"
-                >
-                  삭제
-                </button>
-                <button
-                  onClick={() => {
-                    setNewTitle(targetTimetable?.title ?? '');
-                    setShowRenameSheet(false);
-                  }}
-                  className="w-full p-3 text-left"
-                >
-                  이름 변경
-                </button>
-              </div>
-            </div>
-          )}
-
-          {showDeleteConfirm && (
-            <div className="fixed inset-0 max-w-[375px] mx-auto bg-black bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-4 rounded-lg m-4">
-                <h3 className="text-lg font-semibold mb-4">
-                  시간표를 삭제하시겠습니까?
-                </h3>
-                <div className="flex justify-end gap-2">
+          <AnimatePresence>
+            {showRenameSheet && (
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                className="fixed inset-x-0 bottom-0 bg-white rounded-t-lg shadow-lg mx-auto max-w-[375px]"
+              >
+                <div className="p-4">
                   <button
                     onClick={() => {
-                      setShowDeleteConfirm(false);
+                      setShowRenameSheet(false);
+                      setShowDeleteConfirm(true);
                     }}
-                    className="px-4 py-2 text-gray-600"
-                  >
-                    취소
-                  </button>
-                  <button
-                    onClick={() => {
-                      void handleDeleteTimetable();
-                    }}
-                    className="px-4 py-2 bg-red-500 text-white rounded"
+                    className="w-full p-3 text-left text-red-500 border-b"
                   >
                     삭제
                   </button>
+                  <button
+                    onClick={() => {
+                      setShowRenameSheet(false);
+                    }}
+                    className="w-full p-3 text-left"
+                  >
+                    취소
+                  </button>
                 </div>
-              </div>
-            </div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {showDeleteConfirm && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+              >
+                <motion.div
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0.9 }}
+                  className="bg-white p-4 rounded-lg m-4 max-w-[300px] w-full"
+                >
+                  <h3 className="text-lg font-semibold mb-4">
+                    시간표를 삭제하시겠습니까?
+                  </h3>
+                  <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => {
+                        setShowDeleteConfirm(false);
+                      }}
+                      className="px-4 py-2 text-gray-600"
+                    >
+                      취소
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (targetTimetable != null) {
+                          deleteTimetableMutation.mutate(targetTimetable._id);
+                        }
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded"
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 };

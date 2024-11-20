@@ -1,109 +1,98 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 
 import { getTableInfo, getUserInfo, login } from '../api/api';
 import type { TableResponse } from '../components/types';
 
-const useAuth = () => {
+interface UseAuthReturn {
+  token: string | null;
+  nickname: string | null;
+  tableInfo: TableResponse | null;
+  isLoading: boolean;
+  handleLogin: (username: string, password: string) => Promise<void>;
+  handleLogout: () => void;
+  error: Error | null;
+  handleNicknameChange: () => Promise<void>;
+}
+
+const useAuth = (): UseAuthReturn => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem('token'),
   );
-  const [nickname, setNickname] = useState<string | null>(null);
-  const [tableList, setTableInfo] = useState<TableResponse>();
-  const [title, setTitle] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchUserInfo = useCallback(async (authToken: string) => {
-    try {
-      const userInfo = await getUserInfo(authToken);
-      setNickname(`${userInfo.nickname.nickname}#${userInfo.nickname.tag}`);
-      return userInfo;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : 'Failed to fetch user info. Please try logging in again.';
-      setError(errorMessage);
-      handleLogout();
-      throw err;
-    }
-  }, []);
+  const { data: userInfo, isLoading: isUserLoading } = useQuery({
+    queryKey: ['userInfo', token],
+    queryFn: async () => {
+      if (token == null) return null;
+      return await getUserInfo(token);
+    },
+    enabled: !(token == null),
+  });
 
-  const fetchTableInfo = useCallback(async (authToken: string) => {
-    try {
-      const newTable = await getTableInfo(authToken);
-      const table_title = newTable.title;
-      setTitle(table_title);
-      if (newTable.lecture_list.length === 0) {
-        setTableInfo({ ...newTable, lecture_list: [] });
-        return;
-      }
-      setTableInfo(newTable);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : 'Failed to fetch table info. Please try logging in again.';
-      setError(errorMessage);
-      throw err;
-    }
-  }, []);
+  const { data: tableInfo, isLoading: isTableLoading } = useQuery({
+    queryKey: ['tableInfo', token],
+    queryFn: async () => {
+      if (token == null) return null;
+      return await getTableInfo(token);
+    },
+    enabled: !(token == null),
+  });
 
-  useEffect(() => {
-    const initializeAuth = async () => {
-      setIsLoading(true);
-      if (token != null) {
-        await Promise.all([fetchUserInfo(token), fetchTableInfo(token)]);
-      }
-      setIsLoading(false);
-    };
-    void initializeAuth();
-  }, [token, fetchUserInfo, fetchTableInfo]);
+  const loginMutation = useMutation({
+    mutationFn: async ({
+      username,
+      password,
+    }: {
+      username: string;
+      password: string;
+    }) => {
+      return await login(username, password);
+    },
+    onSuccess: (data) => {
+      setToken(data.token);
+      localStorage.setItem('token', data.token);
+      setError(null);
+      void queryClient.invalidateQueries({ queryKey: ['userInfo'] });
+      void queryClient.invalidateQueries({ queryKey: ['tableInfo'] });
+    },
+    onError: (err) => {
+      setError(
+        err instanceof Error ? err : new Error('Unknown error occurred'),
+      );
+    },
+  });
 
   const handleLogin = async (username: string, password: string) => {
-    try {
-      setError(null);
-      setIsLoading(true);
-      const response = await login(username, password);
-      setToken(response.token);
-      localStorage.setItem('token', response.token);
-      await fetchUserInfo(response.token);
-      await fetchTableInfo(response.token);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Login failed. Please try again.';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
+    await loginMutation.mutateAsync({ username, password });
   };
 
   const handleLogout = () => {
     setToken(null);
-    setNickname(null);
     localStorage.removeItem('token');
+    queryClient.clear();
   };
 
   const handleNicknameChange = async () => {
     if (token != null) {
-      setIsLoading(true);
-      try {
-        await fetchUserInfo(token);
-      } finally {
-        setIsLoading(false);
-      }
+      await queryClient.invalidateQueries({ queryKey: ['userInfo'] });
     }
   };
 
+  const nickname =
+    userInfo?.nickname != null
+      ? `${userInfo.nickname.nickname}#${userInfo.nickname.tag}`
+      : null;
+
   return {
-    tableList,
-    title,
+    token,
     nickname,
-    error,
-    isLoading,
+    tableInfo: tableInfo ?? null,
+    isLoading: isUserLoading || isTableLoading,
     handleLogin,
     handleLogout,
-    token,
+    error,
     handleNicknameChange,
   };
 };
