@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import type { ClassTime, TableResponse } from '../../components/types';
 
@@ -9,6 +10,7 @@ export const TimeTable = ({
   setTotalCredit: (credit: number) => void;
   tableList?: TableResponse;
 }) => {
+  const navigate = useNavigate();
   const hourlist = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const daylist = ['월', '화', '수', '목', '금'];
 
@@ -17,7 +19,6 @@ export const TimeTable = ({
 
   useEffect(() => {
     if (tableList != null) {
-      // tableList가 undefined가 아닌 경우에만 실행
       const totalCredit = tableList.lecture_list.reduce(
         (sum: number, lecture) => sum + lecture.credit,
         0,
@@ -25,6 +26,12 @@ export const TimeTable = ({
       setTotalCredit(totalCredit);
     }
   }, [tableList, setTotalCredit]);
+
+  const handleLectureClick = (lectureId: string) => {
+    if (tableList != null) {
+      navigate(`/timetables/${tableList._id}/lectures/${lectureId}`);
+    }
+  };
 
   return (
     <div className="flex relative overflow-hidden flex-col h-screen max-w-375 mx-auto w-full">
@@ -38,7 +45,7 @@ export const TimeTable = ({
         {daylist.slice(0, 5).map((day, i) => (
           <div
             key={day}
-            className="row-start-1 row-end-2 flex justify-center items-end p-2 text-xs text-textAlternative "
+            className="row-start-1 row-end-2 flex justify-center items-end p-2 text-xs text-textAlternative"
             style={{
               gridColumnStart: i + 2,
               gridColumnEnd: i + 2 + 1,
@@ -61,11 +68,10 @@ export const TimeTable = ({
           </div>
         ))}
 
-        {/* 시간 경계선 */}
         {hourlist.map((_, i) => (
           <div
             key={_}
-            className="col-start-1 -col-end-1 border-t-[1px] border-solid border-t-lineLight "
+            className="col-start-1 -col-end-1 border-t-[1px] border-solid border-t-lineLight"
             style={{
               gridRowStart: i * 12 + 2,
               gridRowEnd: i * 12 + 2 + 6,
@@ -73,7 +79,6 @@ export const TimeTable = ({
           ></div>
         ))}
 
-        {/* 시간 중간선 */}
         {hourlist.map((_, i) => (
           <div
             key={_}
@@ -85,7 +90,6 @@ export const TimeTable = ({
           ></div>
         ))}
 
-        {/* 요일 경계선 */}
         {daylist.slice(0, 5).map((_, i) => (
           <div
             key={_}
@@ -101,13 +105,14 @@ export const TimeTable = ({
           lecture.class_time_json.map((classTime: ClassTime, j: number) => (
             <div
               key={`${i}-${j}`}
-              className="col-start-2 col-end-6 row-start-2 row-end-3 bg-[#f58d3d] text-white text-xs flex justify-center items-center"
+              className="col-start-2 col-end-6 row-start-2 row-end-3 bg-[#f58d3d] text-white text-xs flex justify-center items-center cursor-pointer"
               style={{
                 gridColumnStart: classTime.day + 2,
                 gridColumnEnd: classTime.day + 3,
                 gridRowStart: (classTime.startMinute - 540) / 5 + 2,
                 gridRowEnd: (classTime.endMinute - 540) / 5 + 2,
               }}
+              onClick={() => { handleLectureClick(lecture._id); }}
             >
               <div className="flex flex-col items-center">
                 <span className="text-[10px] font-normal">

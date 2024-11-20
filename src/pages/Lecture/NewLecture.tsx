@@ -1,30 +1,23 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-interface NewLectureForm {
-  course_title: string;
-  instructor: string;
-  credit: number;
-  remark: string;
-}
+import type { TableResponse } from '../../components/types';
+import { LectureForm } from './LectureForm';
 
-const API_BASE_URL =
-  'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
+const API_BASE_URL = 'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
 
 export const NewLecture = () => {
   const navigate = useNavigate();
   const { timetableId } = useParams<{ timetableId: string }>();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState<NewLectureForm>({
-    course_title: '',
-    instructor: '',
-    credit: 3,
-    remark: '',
-  });
 
   const createLectureMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: {
+      course_title: string;
+      instructor: string;
+      credit: number;
+      remark: string;
+    }) => {
       if (timetableId == null) {
         throw new Error('Timetable ID is required');
       }
@@ -38,10 +31,10 @@ export const NewLecture = () => {
             'x-access-token': localStorage.getItem('token') ?? '',
           },
           body: JSON.stringify({
-            ...form,
+            ...values,
             class_time_json: [
               {
-                day: 3, // Wednesday
+                day: 2, // Wednesday
                 place: '강의실',
                 startMinute: 1140, // 19:00
                 endMinute: 1230, // 20:30
@@ -60,7 +53,7 @@ export const NewLecture = () => {
         const error = (await response.json()) as { message?: string };
         throw new Error(error.message ?? 'Failed to create lecture');
       }
-      return response.json() as Promise<{ message: string }>;
+      return response.json() as Promise<TableResponse>;
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['table', timetableId] });
@@ -70,123 +63,26 @@ export const NewLecture = () => {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: {
+    course_title: string;
+    instructor: string;
+    credit: number;
+    remark: string;
+  }) => {
     try {
-      await createLectureMutation.mutateAsync();
+      await createLectureMutation.mutateAsync(values);
     } catch (error) {
       alert(
-        error instanceof Error ? error.message : '강의 생성에 실패했습니다',
+        error instanceof Error ? error.message : 'Failed to create lecture',
       );
     }
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-900">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
-        <button
-          onClick={() => {
-            navigate(-1);
-          }}
-          className="mr-4 text-gray-600 dark:text-gray-300"
-        >
-          ←
-        </button>
-        <h1 className="text-lg font-semibold dark:text-white">새 강의 추가</h1>
-      </div>
-
-      <form
-        onSubmit={(e) => {
-          void handleSubmit(e);
-        }}
-        className="p-4 space-y-4"
-      >
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            강의명
-          </label>
-          <input
-            type="text"
-            value={form.course_title}
-            onChange={(e) => {
-              setForm({ ...form, course_title: e.target.value });
-            }}
-            className="mt-1 block w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            교수명
-          </label>
-          <input
-            type="text"
-            value={form.instructor}
-            onChange={(e) => {
-              setForm({ ...form, instructor: e.target.value });
-            }}
-            className="mt-1 block w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            학점
-          </label>
-          <input
-            type="number"
-            value={form.credit}
-            onChange={(e) => {
-              setForm({ ...form, credit: Number(e.target.value) });
-            }}
-            className="mt-1 block w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-            min="1"
-            max="5"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            비고
-          </label>
-          <textarea
-            value={form.remark}
-            onChange={(e) => {
-              setForm({ ...form, remark: e.target.value });
-            }}
-            className="mt-1 block w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-            rows={3}
-          />
-        </div>
-
-        <div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-            수업 시간: 매주 수요일 19:00-20:30 (고정)
-          </p>
-        </div>
-
-        <div className="flex space-x-2 pt-4">
-          <button
-            type="button"
-            onClick={() => {
-              navigate(-1);
-            }}
-            className="flex-1 p-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          >
-            취소
-          </button>
-          <button
-            type="submit"
-            disabled={createLectureMutation.isPending}
-            className="flex-1 p-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50"
-          >
-            {createLectureMutation.isPending ? '추가 중...' : '추가'}
-          </button>
-        </div>
-      </form>
-    </div>
+    <LectureForm
+      onSubmit={handleSubmit}
+      isLoading={createLectureMutation.isPending}
+      mode="create"
+    />
   );
 };
