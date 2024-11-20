@@ -11,7 +11,8 @@ interface LectureDetailProps {
   onDelete?: () => Promise<void>;
 }
 
-const API_BASE_URL = 'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
+const API_BASE_URL =
+  'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
 
 export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
   const navigate = useNavigate();
@@ -53,13 +54,18 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
         await onDelete();
       }
     } catch (error) {
-      alert(error instanceof Error ? error.message : '강의 삭제에 실패했습니다');
+      alert(
+        error instanceof Error ? error.message : '강의 삭제에 실패했습니다',
+      );
     }
   };
 
   if (lecture == null) return null;
 
-  const renderDetailRow = (label: string, value: string | number | undefined) => (
+  const renderDetailRow = (
+    label: string,
+    value: string | number | undefined,
+  ) => (
     <div className="flex py-[10px]">
       <span className="w-[100px] text-gray-500">{label}</span>
       <span className="flex-1 text-gray-900">{value ?? '-'}</span>
@@ -71,7 +77,9 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
       <div className="p-4 border-b border-gray-200 flex items-center justify-between">
         <div className="flex items-center">
           <button
-            onClick={() => { navigate('/'); }}
+            onClick={() => {
+              navigate('/');
+            }}
             className="mr-4 text-gray-600"
           >
             ←
@@ -80,12 +88,16 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => { setShowNotificationModal(true); }}
+            onClick={() => {
+              setShowNotificationModal(true);
+            }}
           >
             <img src={alarm} alt="알림" className="w-6 h-6" />
           </button>
           <button
-            onClick={() => { setIsWatchlisted(!isWatchlisted); }}
+            onClick={() => {
+              setIsWatchlisted(!isWatchlisted);
+            }}
           >
             <img
               src={bookmark}
@@ -109,7 +121,10 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
           {renderDetailRow('구분', '')}
           {renderDetailRow('강좌번호', lecture.lecture_number)}
           {renderDetailRow('분반번호', lecture.course_number)}
-          {renderDetailRow('정원(재학생)', `${lecture.quota}(${lecture.quota - lecture.freshman_quota})`)}
+          {renderDetailRow(
+            '정원(재학생)',
+            `${lecture.quota}(${lecture.quota - lecture.freshman_quota})`,
+          )}
           {renderDetailRow('비고', lecture.remark)}
         </div>
 
@@ -117,7 +132,10 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
           <h3 className="font-medium mb-2">시간 및 장소</h3>
           {lecture.class_time_json.map((time, index) => (
             <div key={index} className="mb-2">
-              <div>시간: {['월', '화', '수', '목', '금'][time.day]}요일 {time.start_time}-{time.end_time}</div>
+              <div>
+                시간: {['월', '화', '수', '목', '금'][time.day]}요일{' '}
+                {time.start_time}-{time.end_time}
+              </div>
               <div>장소: {time.place}</div>
             </div>
           ))}
@@ -125,19 +143,25 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
 
         <div className="p-4 space-y-2">
           <button
-            onClick={() => { alert('강의계획서 기능은 준비중입니다.'); }}
+            onClick={() => {
+              alert('강의계획서 기능은 준비중입니다.');
+            }}
             className="w-full p-3 text-center border border-gray-300 rounded"
           >
             강의계획서
           </button>
           <button
-            onClick={() => { alert('강의평 기능은 준비중입니다.'); }}
+            onClick={() => {
+              alert('강의평 기능은 준비중입니다.');
+            }}
             className="w-full p-3 text-center border border-gray-300 rounded"
           >
             강의평
           </button>
           <button
-            onClick={() => { setShowNotificationModal(true); }}
+            onClick={() => {
+              setShowNotificationModal(true);
+            }}
             className="w-full p-3 text-center border border-gray-300 rounded"
           >
             빈자리 알림
@@ -161,7 +185,9 @@ export const LectureDetail = ({ lecture, onDelete }: LectureDetailProps) => {
             </p>
             <div className="flex justify-end gap-2">
               <button
-                onClick={() => { setShowNotificationModal(false); }}
+                onClick={() => {
+                  setShowNotificationModal(false);
+                }}
                 className="px-4 py-2 text-gray-600"
               >
                 취소

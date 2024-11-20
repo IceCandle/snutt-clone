@@ -1,5 +1,8 @@
-// App.tsx
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query';
 
 import LoadingSpinner from './components/LoadingSpinner';
 import type { TableResponse } from './components/types';
@@ -21,16 +24,34 @@ const queryClient = new QueryClient({
 const AppContent = () => {
   const {
     nickname,
-    tableInfo,
+    token,
     error,
     isLoading,
     handleLogin,
     handleLogout,
-    token,
     handleNicknameChange,
   } = useAuth();
 
-  if (isLoading) {
+  const { data: currentTable, isLoading: isTableLoading } =
+    useQuery<TableResponse>({
+      queryKey: ['currentTable'],
+      queryFn: async () => {
+        if (token == null) throw new Error('No token');
+        const response = await fetch(
+          'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/tables/recent',
+          {
+            headers: {
+              'x-access-token': token,
+            },
+          },
+        );
+        if (!response.ok) throw new Error('Failed to fetch current table');
+        return response.json() as Promise<TableResponse>;
+      },
+      enabled: token != null,
+    });
+
+  if (isLoading || isTableLoading) {
     return (
       <div className="h-screen w-screen flex items-center justify-center">
         <LoadingSpinner />
@@ -45,8 +66,8 @@ const AppContent = () => {
           <UserInfoPage
             nickname={nickname}
             onLogout={handleLogout}
-            tableList={tableInfo as TableResponse}
-            title={tableInfo?.title ?? null}
+            tableList={currentTable as TableResponse}
+            title={currentTable?.title ?? null}
             token={token}
             onNicknameChange={handleNicknameChange}
           />
@@ -61,12 +82,10 @@ const AppContent = () => {
   );
 };
 
-const App = () => {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppContent />
     </QueryClientProvider>
   );
-};
-
-export default App;
+}

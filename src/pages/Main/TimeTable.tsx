@@ -112,7 +112,9 @@ export const TimeTable = ({
                 gridRowStart: (classTime.startMinute - 540) / 5 + 2,
                 gridRowEnd: (classTime.endMinute - 540) / 5 + 2,
               }}
-              onClick={() => { handleLectureClick(lecture._id); }}
+              onClick={() => {
+                handleLectureClick(lecture._id);
+              }}
             >
               <div className="flex flex-col items-center">
                 <span className="text-[10px] font-normal">

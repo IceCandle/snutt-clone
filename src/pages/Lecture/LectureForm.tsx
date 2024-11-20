@@ -1,19 +1,24 @@
-import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+interface TimeSlot {
+  day: number;
+  start: string;
+  end: string;
+  place: string;
+}
+
+interface LectureFormValues {
+  course_title: string;
+  instructor: string;
+  credit: number;
+  remark: string;
+  times: TimeSlot[];
+}
+
 interface LectureFormProps {
-  initialValues?: {
-    course_title: string;
-    instructor: string;
-    credit: number;
-    remark: string;
-  };
-  onSubmit: (values: {
-    course_title: string;
-    instructor: string;
-    credit: number;
-    remark: string;
-  }) => Promise<void>;
+  initialValues?: LectureFormValues;
+  onSubmit: (values: LectureFormValues) => Promise<void>;
   isLoading: boolean;
   mode: 'create' | 'edit';
 }
@@ -22,114 +27,201 @@ export const LectureForm = ({
   initialValues = {
     course_title: '',
     instructor: '',
-    credit: 3,
+    credit: 0,
     remark: '',
+    times: [{ day: 0, start: '09:00', end: '10:00', place: '' }],
   },
   onSubmit,
   isLoading,
-  mode,
 }: LectureFormProps) => {
   const navigate = useNavigate();
-  const [values, setValues] = React.useState(initialValues);
+  const [form, setForm] = useState<LectureFormValues>(initialValues);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await onSubmit(values);
+  const handleSubmit = async () => {
+    if (isLoading) return;
+    await onSubmit(form);
+  };
+
+  const handleAddTime = () => {
+    setForm((prev) => ({
+      ...prev,
+      times: [
+        ...prev.times,
+        { day: 0, start: '09:00', end: '10:00', place: '' },
+      ],
+    }));
+  };
+
+  const handleRemoveTime = (index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      times: prev.times.filter((_, i) => i !== index),
+    }));
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-900">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
+    <div className="flex flex-col h-full bg-white">
+      <div className="flex justify-between p-4 border-b">
         <button
-          onClick={() => { navigate(-1); }}
-          className="mr-4 text-gray-600 dark:text-gray-300"
+          onClick={() => {
+            navigate(-1);
+          }}
+          className="text-lg"
         >
-          ←
+          취소
         </button>
-        <h1 className="text-lg font-semibold dark:text-white">
-          {mode === 'create' ? '새 강의 추가' : '강의 수정'}
-        </h1>
+        <button
+          onClick={() => {
+            void handleSubmit();
+          }}
+          className="text-lg"
+          disabled={isLoading}
+        >
+          {isLoading ? '저장 중...' : '저장'}
+        </button>
       </div>
 
-      <form onSubmit={(e) => { void handleSubmit(e); }} className="p-4 space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            강의명
-          </label>
+      <div className="p-4 space-y-4">
+        <div className="space-y-2">
+          <label className="block text-gray-500">강의명</label>
           <input
             type="text"
-            value={values.course_title}
+            value={form.course_title}
             onChange={(e) => {
-              setValues({ ...values, course_title: e.target.value });
+              setForm((prev) => ({ ...prev, course_title: e.target.value }));
             }}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-            required
+            className="w-full p-2 border-b focus:outline-none"
+            placeholder="새로운 강의"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            교수명
-          </label>
+        <div className="space-y-2">
+          <label className="block text-gray-500">교수</label>
           <input
             type="text"
-            value={values.instructor}
+            value={form.instructor}
             onChange={(e) => {
-              setValues({ ...values, instructor: e.target.value });
+              setForm((prev) => ({ ...prev, instructor: e.target.value }));
             }}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-            required
+            className="w-full p-2 border-b focus:outline-none"
+            placeholder="(없음)"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            학점
-          </label>
+        <div className="space-y-2">
+          <label className="block text-gray-500">학점</label>
           <input
             type="number"
-            min="1"
-            max="5"
-            value={values.credit}
+            value={form.credit}
             onChange={(e) => {
-              setValues({ ...values, credit: Number(e.target.value) });
+              setForm((prev) => ({ ...prev, credit: Number(e.target.value) }));
             }}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-            required
+            className="w-full p-2 border-b focus:outline-none"
+            placeholder="0"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            비고
-          </label>
-          <textarea
-            value={values.remark}
-            onChange={(e) => {
-              setValues({ ...values, remark: e.target.value });
-            }}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-            rows={3}
-          />
+        <div className="space-y-2">
+          <label className="block text-gray-500">색</label>
+          <div className="flex items-center space-x-2 p-2 border-b">
+            <div className="w-6 h-6 bg-red-500 rounded" />
+            <span className="text-gray-400">▶</span>
+          </div>
         </div>
 
-        <div className="pt-4 flex gap-2">
+        <div className="space-y-2">
+          <label className="block text-gray-500">시간 및 장소</label>
+          {form.times.map((time, index) => (
+            <div
+              key={index}
+              className="flex items-center space-x-2 border-b p-2"
+            >
+              <select
+                value={time.day}
+                onChange={(e) => {
+                  const newTimes = [...form.times];
+                  if (newTimes[index] != null) {
+                    newTimes[index].day = Number(e.target.value);
+                  }
+                  setForm((prev) => ({ ...prev, times: newTimes }));
+                }}
+                className="border-none focus:outline-none"
+              >
+                {['월', '화', '수', '목', '금'].map((day, i) => (
+                  <option key={i} value={i}>
+                    {day}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="time"
+                value={time.start}
+                onChange={(e) => {
+                  const newTimes = [...form.times];
+                  if (newTimes[index] != null) {
+                    newTimes[index].start = e.target.value;
+                  }
+                  setForm((prev) => ({ ...prev, times: newTimes }));
+                }}
+                className="border-none focus:outline-none"
+              />
+              ~
+              <input
+                type="time"
+                value={time.end}
+                onChange={(e) => {
+                  const newTimes = [...form.times];
+                  if (newTimes[index] != null) {
+                    newTimes[index].end = e.target.value;
+                  }
+                  setForm((prev) => ({ ...prev, times: newTimes }));
+                }}
+                className="border-none focus:outline-none"
+              />
+              <input
+                type="text"
+                value={time.place}
+                onChange={(e) => {
+                  const newTimes = [...form.times];
+                  if (newTimes[index] != null) {
+                    newTimes[index].place = e.target.value;
+                  }
+                  setForm((prev) => ({ ...prev, times: newTimes }));
+                }}
+                placeholder="(없음)"
+                className="flex-1 border-none focus:outline-none"
+              />
+              <button
+                onClick={() => {
+                  handleRemoveTime(index);
+                }}
+                className="text-gray-500"
+              >
+                ×
+              </button>
+            </div>
+          ))}
           <button
-            type="button"
-            onClick={() => { navigate(-1); }}
-            className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+            onClick={handleAddTime}
+            className="w-full p-2 text-center border-b"
           >
-            취소
-          </button>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="flex-1 px-4 py-2 border border-transparent text-white bg-gray-600 rounded-md hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-50"
-          >
-            {isLoading ? '처리중...' : mode === 'create' ? '추가' : '수정'}
+            + 시간 추가
           </button>
         </div>
-      </form>
+
+        <div className="space-y-2">
+          <label className="block text-gray-500">비고</label>
+          <input
+            type="text"
+            value={form.remark}
+            onChange={(e) => {
+              setForm((prev) => ({ ...prev, remark: e.target.value }));
+            }}
+            className="w-full p-2 border-b focus:outline-none"
+            placeholder="(없음)"
+          />
+        </div>
+      </div>
     </div>
   );
 };

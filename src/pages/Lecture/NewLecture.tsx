@@ -4,7 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { TableResponse } from '../../components/types';
 import { LectureForm } from './LectureForm';
 
-const API_BASE_URL = 'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
+const API_BASE_URL =
+  'https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1';
 
 export const NewLecture = () => {
   const navigate = useNavigate();
@@ -17,10 +18,35 @@ export const NewLecture = () => {
       instructor: string;
       credit: number;
       remark: string;
+      times: Array<{
+        day: number;
+        start: string;
+        end: string;
+        place: string;
+      }>;
     }) => {
       if (timetableId == null) {
         throw new Error('Timetable ID is required');
       }
+
+      const timeToMinutes = (time: string) => {
+        const [hours, minutes] = time.split(':').map(Number);
+        if (hours === undefined || minutes === undefined) {
+          throw new Error('Invalid time format');
+        }
+        return hours * 60 + minutes;
+      };
+
+      const classTimeJson = values.times.map((time) => ({
+        day: time.day,
+        place: time.place.length > 0 || '강의실',
+        startMinute: timeToMinutes(time.start),
+        endMinute: timeToMinutes(time.end),
+        start_time: time.start,
+        end_time: time.end,
+        len: timeToMinutes(time.end) - timeToMinutes(time.start),
+        start: timeToMinutes(time.start),
+      }));
 
       const response = await fetch(
         `${API_BASE_URL}/tables/${timetableId}/lecture?isForced=true`,
@@ -31,19 +57,11 @@ export const NewLecture = () => {
             'x-access-token': localStorage.getItem('token') ?? '',
           },
           body: JSON.stringify({
-            ...values,
-            class_time_json: [
-              {
-                day: 2, // Wednesday
-                place: '강의실',
-                startMinute: 1140, // 19:00
-                endMinute: 1230, // 20:30
-                start_time: '19:00',
-                end_time: '20:30',
-                len: 90,
-                start: 1140,
-              },
-            ],
+            course_title: values.course_title,
+            instructor: values.instructor,
+            credit: values.credit,
+            remark: values.remark,
+            class_time_json: classTimeJson,
             colorIndex: 0,
           }),
         },
@@ -56,10 +74,10 @@ export const NewLecture = () => {
       return response.json() as Promise<TableResponse>;
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['table', timetableId] });
-      if (timetableId != null) {
-        navigate(`/timetables/${timetableId}/lectures`);
-      }
+      void queryClient.invalidateQueries({
+        queryKey: ['tableInfo', 'currentTable'],
+      });
+      navigate('/');
     },
   });
 
@@ -68,6 +86,12 @@ export const NewLecture = () => {
     instructor: string;
     credit: number;
     remark: string;
+    times: Array<{
+      day: number;
+      start: string;
+      end: string;
+      place: string;
+    }>;
   }) => {
     try {
       await createLectureMutation.mutateAsync(values);
