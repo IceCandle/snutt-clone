@@ -9,7 +9,7 @@ import searchIcon from '../assets/search-icon.png';
 export const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const getActiveMenu = (path: string) => {
     return location.pathname === path ? 'opacity-100' : 'opacity-50';
   };
@@ -19,7 +19,9 @@ export const Navbar = () => {
       <div className="max-w-[375px] mx-auto flex justify-between items-center">
         <button
           className={`flex flex-col items-center ${getActiveMenu('/')}`}
-          onClick={() => { navigate('/'); }}
+          onClick={() => {
+            navigate('/');
+          }}
         >
           <img src={mainIcon} alt="Main" className="w-6 h-6" />
           <span className="text-xs mt-1">시간표</span>
@@ -38,7 +40,9 @@ export const Navbar = () => {
         </button>
         <button
           className={`flex flex-col items-center ${getActiveMenu('/mypage')}`}
-          onClick={() => { navigate('/mypage'); }}
+          onClick={() => {
+            navigate('/mypage');
+          }}
         >
           <img src={mypageIcon} alt="My Page" className="w-6 h-6" />
           <span className="text-xs mt-1">마이페이지</span>

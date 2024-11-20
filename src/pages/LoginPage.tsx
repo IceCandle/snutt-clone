@@ -58,7 +58,9 @@ const LoginPage = ({ onLogin, error }: LoginPageProps) => {
           >
             <LoginForm onLogin={handleLogin} error={loginError} />
             <button
-              onClick={() => { setIsLoginView(false); }}
+              onClick={() => {
+                setIsLoginView(false);
+              }}
               className="w-full mt-4 text-gray-500 text-sm"
             >
               뒤로 가기
@@ -71,7 +73,9 @@ const LoginPage = ({ onLogin, error }: LoginPageProps) => {
             exit={{ opacity: 0 }}
           >
             <button
-              onClick={() => { setIsLoginView(true); }}
+              onClick={() => {
+                setIsLoginView(true);
+              }}
               className="w-full p-4 bg-[#f58d3d] rounded-md flex justify-center items-center"
             >
               <span className="text-white text-sm font-bold font-['Pretendard']">

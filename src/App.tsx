@@ -51,9 +51,9 @@ const AppContent = () => {
             onNicknameChange={handleNicknameChange}
           />
         ) : (
-          <LoginPage 
-            onLogin={handleLogin} 
-            error={error instanceof Error ? error.message : null} 
+          <LoginPage
+            onLogin={handleLogin}
+            error={error instanceof Error ? error.message : null}
           />
         )}
       </div>

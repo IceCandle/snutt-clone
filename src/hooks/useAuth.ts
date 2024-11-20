@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
-import { getTableInfo,getUserInfo, login } from '../api/api';
+import { getTableInfo, getUserInfo, login } from '../api/api';
 import type { TableResponse } from '../components/types';
 
 interface UseAuthReturn {
@@ -16,7 +16,9 @@ interface UseAuthReturn {
 }
 
 const useAuth = (): UseAuthReturn => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem('token'),
+  );
   const [error, setError] = useState<Error | null>(null);
   const queryClient = useQueryClient();
 
@@ -39,7 +41,13 @@ const useAuth = (): UseAuthReturn => {
   });
 
   const loginMutation = useMutation({
-    mutationFn: async ({ username, password }: { username: string; password: string }) => {
+    mutationFn: async ({
+      username,
+      password,
+    }: {
+      username: string;
+      password: string;
+    }) => {
       return await login(username, password);
     },
     onSuccess: (data) => {
@@ -50,7 +58,9 @@ const useAuth = (): UseAuthReturn => {
       void queryClient.invalidateQueries({ queryKey: ['tableInfo'] });
     },
     onError: (err) => {
-      setError(err instanceof Error ? err : new Error('Unknown error occurred'));
+      setError(
+        err instanceof Error ? err : new Error('Unknown error occurred'),
+      );
     },
   });
 
@@ -70,9 +80,10 @@ const useAuth = (): UseAuthReturn => {
     }
   };
 
-  const nickname = ((userInfo?.nickname) != null) 
-    ? `${userInfo.nickname.nickname}#${userInfo.nickname.tag}`
-    : null;
+  const nickname =
+    userInfo?.nickname != null
+      ? `${userInfo.nickname.nickname}#${userInfo.nickname.tag}`
+      : null;
 
   return {
     token,

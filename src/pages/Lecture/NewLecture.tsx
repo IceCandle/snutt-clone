@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 interface NewLectureForm {
@@ -13,7 +14,8 @@ const API_BASE_URL =
 
 export const NewLecture = () => {
   const navigate = useNavigate();
-  const { timetableId } = useParams();
+  const { timetableId } = useParams<{ timetableId: string }>();
+  const queryClient = useQueryClient();
   const [form, setForm] = useState<NewLectureForm>({
     course_title: '',
     instructor: '',
@@ -21,12 +23,12 @@ export const NewLecture = () => {
     remark: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
+  const createLectureMutation = useMutation({
+    mutationFn: async () => {
       if (timetableId == null) {
         throw new Error('Timetable ID is required');
       }
+
       const response = await fetch(
         `${API_BASE_URL}/tables/${timetableId}/lecture?isForced=true`,
         {
@@ -39,7 +41,7 @@ export const NewLecture = () => {
             ...form,
             class_time_json: [
               {
-                day: '3', // Wednesday
+                day: 3, // Wednesday
                 place: '강의실',
                 startMinute: 1140, // 19:00
                 endMinute: 1230, // 20:30
@@ -54,10 +56,28 @@ export const NewLecture = () => {
         },
       );
 
-      if (!response.ok) throw new Error('Failed to create lecture');
-      navigate(`/timetables/${timetableId}/lectures`);
+      if (!response.ok) {
+        const error = (await response.json()) as { message?: string };
+        throw new Error(error.message ?? 'Failed to create lecture');
+      }
+      return response.json() as Promise<{ message: string }>;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['table', timetableId] });
+      if (timetableId != null) {
+        navigate(`/timetables/${timetableId}/lectures`);
+      }
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createLectureMutation.mutateAsync();
     } catch (error) {
-      console.error('Error creating lecture:', error);
+      alert(
+        error instanceof Error ? error.message : '강의 생성에 실패했습니다',
+      );
     }
   };
 
@@ -91,7 +111,7 @@ export const NewLecture = () => {
             onChange={(e) => {
               setForm({ ...form, course_title: e.target.value });
             }}
-            className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+            className="mt-1 block w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             required
           />
         </div>
@@ -106,7 +126,7 @@ export const NewLecture = () => {
             onChange={(e) => {
               setForm({ ...form, instructor: e.target.value });
             }}
-            className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+            className="mt-1 block w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             required
           />
         </div>
@@ -119,9 +139,9 @@ export const NewLecture = () => {
             type="number"
             value={form.credit}
             onChange={(e) => {
-              setForm({ ...form, credit: parseInt(e.target.value) });
+              setForm({ ...form, credit: Number(e.target.value) });
             }}
-            className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+            className="mt-1 block w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             min="1"
             max="5"
             required
@@ -137,26 +157,33 @@ export const NewLecture = () => {
             onChange={(e) => {
               setForm({ ...form, remark: e.target.value });
             }}
-            className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+            className="mt-1 block w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             rows={3}
           />
         </div>
 
-        <div className="flex space-x-2">
+        <div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            수업 시간: 매주 수요일 19:00-20:30 (고정)
+          </p>
+        </div>
+
+        <div className="flex space-x-2 pt-4">
           <button
             type="button"
             onClick={() => {
               navigate(-1);
             }}
-            className="flex-1 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
+            className="flex-1 p-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           >
             취소
           </button>
           <button
             type="submit"
-            className="flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            disabled={createLectureMutation.isPending}
+            className="flex-1 p-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50"
           >
-            추가
+            {createLectureMutation.isPending ? '추가 중...' : '추가'}
           </button>
         </div>
       </form>
